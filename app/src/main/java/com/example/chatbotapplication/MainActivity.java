@@ -94,7 +94,8 @@ public class MainActivity extends AppCompatActivity {
                 etInputMsg.setText(""); //clear the textbox after user click send
 
                 //get a reply upon entering text
-                if (userinputstr.contains("Hello")){
+                userinputstr = userinputstr.toLowerCase();
+                if (userinputstr.contains("hello")){
                     Log.d("Debug tag","hello received ");
 
                     list_send.add(new chatData("",
