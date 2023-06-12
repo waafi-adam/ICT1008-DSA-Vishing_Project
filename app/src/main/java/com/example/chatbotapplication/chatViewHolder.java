@@ -15,15 +15,12 @@ public class chatViewHolder
     chatViewHolder(View itemView)
     {
         super(itemView);
-//        userName
-//                = (TextView)itemView
-//                .findViewById(R.id.textMessageSent);
         userMessage
                 = (TextView)itemView
-                .findViewById(R.id.textMessageSent);
+                .findViewById(R.id.textMessage);
         msgSentDate
                 = (TextView)itemView
-                .findViewById(R.id.textDateTimeSent);
+                .findViewById(R.id.textDateTime);
         view  = itemView;
     }
 }
