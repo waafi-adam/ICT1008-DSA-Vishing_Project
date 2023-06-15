@@ -95,14 +95,16 @@ public class MainActivity extends AppCompatActivity {
 
                 //get a reply upon entering text
                 userinputstr = userinputstr.toLowerCase();
-                if (userinputstr.contains("hello")){
-                    Log.d("Debug tag","hello received ");
-
-                    list_send.add(new chatData("",
-                            "",
-                            "Hello, how may I assist you?",1));
-                    adapter = new ChatAdapter(list_send, getApplication());
-                    recyclerView.setAdapter(adapter);
+                if (userinputstr.contains("i want to report a vishing attack")) {
+                    list_send.add(new chatData("", "", "What happened?", 1));
+                    adapter.notifyDataSetChanged();
+                } else if (userinputstr.contains("i want to check if i got vished")) {
+                    list_send.add(new chatData("", "", "Ok! Send me an audio file for me to analyze.", 1));
+                    adapter.notifyDataSetChanged();
+                } else {
+                    // Handle other user inputs and provide appropriate responses
+                    // For example:
+                    list_send.add(new chatData("", "", "I'm sorry, I don't understand. Can you please rephrase your question?", 1));
                     adapter.notifyDataSetChanged();
                 }
 
