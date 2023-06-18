@@ -20,6 +20,9 @@ public class ChatAdapter extends RecyclerView.Adapter<chatViewHolder> {
     private static final int VIEW_TYPE_RECEIVED = 1;
 
     private static final int VIEW_TYPE_MP = 2;
+    private OnItemClickListener listener;
+    private boolean checkpause = false;
+    public int playingposition = -1;
 
     public ChatAdapter(List<chatData> list, Context context){
         this.list = list;
@@ -70,7 +73,7 @@ public class ChatAdapter extends RecyclerView.Adapter<chatViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(final chatViewHolder holder, final int position) {
+    public void onBindViewHolder(final chatViewHolder holder, int position) {
         final int index = holder.getAdapterPosition();
         switch (holder.getItemViewType()) {
             case VIEW_TYPE_SENT:
@@ -85,7 +88,17 @@ public class ChatAdapter extends RecyclerView.Adapter<chatViewHolder> {
                 break;
             case VIEW_TYPE_MP:
                 chatViewHolder viewHoldermp = (chatViewHolder)holder;
-                viewHoldermp.userMessage.setText("");
+                viewHoldermp.button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        viewHoldermp.button.setImageResource(R.drawable.ic_action_pause);
+
+                        if (listener != null) {
+                            listener.onItemClick(viewHoldermp.getAdapterPosition());
+
+                        }
+                    }
+                });
                 break;
         }
     }
@@ -114,4 +127,12 @@ public class ChatAdapter extends RecyclerView.Adapter<chatViewHolder> {
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
     }
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+    }
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
+
+
 }

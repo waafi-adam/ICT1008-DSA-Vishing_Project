@@ -1,5 +1,6 @@
 package com.example.chatbotapplication;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -11,15 +12,19 @@ import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.SeekBar;
 import android.widget.Toast;
 import com.chaquo.python.Python;
 import com.chaquo.python.android.AndroidPlatform;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,15 +32,24 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ChatAdapter.OnItemClickListener, MediaPlayer.OnCompletionListener {
+    private static final int PERMISSION_REQUEST_CODE = 1;
     ChatAdapter adapter;
     RecyclerView recyclerView;
     FrameLayout layoutSend, btnrecord;
     EditText etInputMsg;
+    private SeekBar seekBar;
+    private ImageButton imgbtn;
+    private Handler handler;
+    private Runnable runnable;
     private MediaRecorder mediaRecorder;
     private MediaPlayer mediaPlayer;
     private String AudioSavePath = null;
+    Random random ;
+    String RandomAudioFileName = "ABCDEFGHIJKLMNOP";
+
     List<String> userResponses = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,11 +70,11 @@ public class MainActivity extends AppCompatActivity {
                 "June 09, 2015",
                 "Hello World",0));
 
-//        list = getData();
         recyclerView = (RecyclerView) findViewById(R.id.chatRecyclerView);
 
         //sending adapter
         adapter = new ChatAdapter(list_send, getApplication());
+        adapter.setOnItemClickListener(this);
         recyclerView.setAdapter(adapter);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
@@ -72,8 +86,7 @@ public class MainActivity extends AppCompatActivity {
         if (checkPermissions()){
             Log.d("Debug","permission already provided");
         }else{
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{
-                    Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
+            requestPermissions();
         }
 
         layoutSend.setOnClickListener(new View.OnClickListener() {
@@ -127,42 +140,41 @@ public class MainActivity extends AppCompatActivity {
                     case MotionEvent.ACTION_DOWN:
                         //start recording
                         if (checkPermissions()){
-                            AudioSavePath = Environment.getExternalStorageDirectory().getAbsolutePath()+"/"+"recordingAudio.mp3";
-                            Log.d("Debug filepath",AudioSavePath);
-                            mediaRecorder = new MediaRecorder();
-                            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-                            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-                            mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-                            mediaRecorder.setOutputFile(AudioSavePath);
+                            // Create a timestamped file name
+                            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+                            String fileName = "Recording_" + timeStamp + ".3gp";
 
-                            try {
-                                mediaRecorder.prepare();
-                                mediaRecorder.start();
-                                Toast.makeText(MainActivity.this, "Recording started", Toast.LENGTH_SHORT).show();
-                            }catch (IOException e){
-                                e.printStackTrace();
+                            // Get the app's private external storage directory
+                            File externalFilesDir = getExternalFilesDir(null);
+                            if (externalFilesDir != null) {
+                                // Create a directory for recordings if it doesn't exist
+                                File recordingsDir = new File(externalFilesDir, "Recordings");
+                                recordingsDir.mkdirs();
+
+                                // Create the record file
+                                File recordFile = new File(recordingsDir, fileName);
+                                AudioSavePath = recordFile.getAbsolutePath(); //file location: /storage/emulated/0/Android/data/com.example.chatbotapplication/files/Recordings/
+
+                                // Initialize and configure the MediaRecorder
+                                mediaRecorder = new MediaRecorder();
+                                mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                                mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+                                mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+                                mediaRecorder.setOutputFile(AudioSavePath);
+
+                                try {
+                                    mediaRecorder.prepare();
+                                    mediaRecorder.start();
+                                    Toast.makeText(MainActivity.this, "Recording started", Toast.LENGTH_SHORT).show();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(MainActivity.this, "Recording failed", Toast.LENGTH_SHORT).show();
+                                }
                             }
 
-                            //display media player
-                            list_send.add(new chatData("",
-                                    "",
-                                    "",2));
-                            adapter = new ChatAdapter(list_send, getApplication());
-                            recyclerView.setAdapter(adapter);
-                            adapter.notifyDataSetChanged();
-
-//                            mediaPlayer = new MediaPlayer();
-//                            try {
-//                                mediaPlayer.setDataSource(AudioSavePath);
-//                                mediaPlayer.prepare();
-//                                mediaPlayer.start();
-//                            } catch (IOException e) {
-//                                throw new RuntimeException(e);
-//                            }
 
                         }else{
-                            ActivityCompat.requestPermissions(MainActivity.this, new String[]{
-                                    Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
+                            requestPermissions();
                         }
                         return true;
                     case MotionEvent.ACTION_UP:
@@ -171,19 +183,17 @@ public class MainActivity extends AppCompatActivity {
                             try {
                                 mediaRecorder.stop();
                                 mediaRecorder.release();
+                                mediaRecorder = null;
+                                Toast.makeText(MainActivity.this, "Recording stopped", Toast.LENGTH_SHORT).show();
 
                                 //display media player
-//                                list_send.add(new chatData("",
-//                                        "",
-//                                        "",2));
-//                                adapter = new ChatAdapter(list_send, getApplication());
-//                                recyclerView.setAdapter(adapter);
-//                                adapter.notifyDataSetChanged();
+                                list_send.add(new chatData("", "", "", 2));
+                                adapter.notifyDataSetChanged();
+
 
                             } catch (IllegalStateException e) {
                                 Log.d("debug recording stop function error",e.toString());
                             }
-                            Toast.makeText(MainActivity.this, "Recording stopped", Toast.LENGTH_SHORT).show();
                         }
                         return true;
                 }
@@ -194,9 +204,128 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean checkPermissions(){
         int audio_per = ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO);
-        int write_per = ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO);
+        int write_per = ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
         return audio_per == PackageManager.PERMISSION_GRANTED && write_per == PackageManager.PERMISSION_GRANTED;
+    }
+    private void requestPermissions() {
+        ActivityCompat.requestPermissions(MainActivity.this, new String[]{
+                Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE},PERMISSION_REQUEST_CODE);
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+                    grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permissions granted", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Permissions denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+    public String CreateRandomAudioFileName(int string){
+        StringBuilder stringBuilder = new StringBuilder( string );
+        int i = 0 ;
+        while(i < string ) {
+            stringBuilder.append(RandomAudioFileName.charAt(random.nextInt(RandomAudioFileName.length())));
+
+            i++ ;
+        }
+        return stringBuilder.toString();
     }
 
 
+    private void initializeSeekBar() {
+        seekBar = findViewById(R.id.seekBar);
+        imgbtn = findViewById(R.id.ibPlay);
+        handler = new Handler();
+
+        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mediaPlayer) {
+                // Set the maximum value of the SeekBar to the audio duration
+                seekBar.setMax(mediaPlayer.getDuration());
+                // Start updating the SeekBar progress
+                updateSeekBar();
+            }
+        });
+
+        seekBar.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return true;
+            }
+        });
+        // SeekBar change listener
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) {
+                    // Seek to the selected progress when the user drags the SeekBar
+                    mediaPlayer.seekTo(progress);
+                }
+                if (progress == seekBar.getMax()) {
+                    imgbtn.setImageResource(R.drawable.ic_action_play);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // Remove the callback to stop updating the SeekBar progress
+                handler.removeCallbacks(runnable);
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                // Resume updating the SeekBar progress
+                updateSeekBar();
+            }
+        });
+    }
+
+    private void updateSeekBar() {
+        if (mediaPlayer != null) {
+            // Update the SeekBar progress with the current position
+            seekBar.setProgress(mediaPlayer.getCurrentPosition());
+            // Delayed call to update the SeekBar progress every second
+            handler.postDelayed(runnable, 1000);
+        }
+    }
+
+    // ...
+
+    @Override
+    public void onCompletion(MediaPlayer mediaPlayer) {
+        // Stop updating the SeekBar progress when audio playback finishes
+        handler.removeCallbacks(runnable);
+        seekBar.setProgress(0);
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        //play recording
+        mediaPlayer = new MediaPlayer();
+        try {
+            mediaPlayer.setDataSource(AudioSavePath);
+            mediaPlayer.prepare();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        // Initialize the SeekBar and setup progress updates
+        initializeSeekBar();
+        // Set up the runnable for updating the SeekBar progress
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                updateSeekBar();
+            }
+        };
+        //
+
+        mediaPlayer.start();
+
+    }
 }
