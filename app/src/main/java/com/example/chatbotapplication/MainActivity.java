@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private MediaRecorder mediaRecorder;
     private MediaPlayer mediaPlayer;
     private String AudioSavePath = null;
+    List<String> userResponses = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,15 +79,15 @@ public class MainActivity extends AppCompatActivity {
         layoutSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("Debug send click","send msg click btn pressed");
+                Log.d("Debug send click", "send msg click btn pressed");
                 String userinputstr = etInputMsg.getText().toString();
                 Date c = Calendar.getInstance().getTime();
                 SimpleDateFormat df = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
                 String formattedDate = df.format(c);
-                Log.d("Debug send click",formattedDate);
+                Log.d("Debug send click", formattedDate);
                 list_send.add(new chatData("",
                         formattedDate,
-                        ""+userinputstr,0));
+                        "" + userinputstr, 0));
                 adapter = new ChatAdapter(list_send, getApplication());
                 recyclerView.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
@@ -95,12 +96,21 @@ public class MainActivity extends AppCompatActivity {
 
                 //get a reply upon entering text
                 userinputstr = userinputstr.toLowerCase();
+                userResponses.add(userinputstr);
                 if (userinputstr.contains("i want to report a vishing attack")) {
                     list_send.add(new chatData("", "", "What happened?", 1));
                     adapter.notifyDataSetChanged();
                 } else if (userinputstr.contains("i want to check if i got vished")) {
                     list_send.add(new chatData("", "", "Ok! Send me an audio file for me to analyze.", 1));
                     adapter.notifyDataSetChanged();
+                } else if (userinputstr.contains("check responses")) {
+                    for (int i = 0; i < userResponses.size(); i++) {
+                        String userResponse = userResponses.get(i);
+
+                        // Add user's response to the list
+                        list_send.add(new chatData("", "", userResponse, 1));
+                        adapter.notifyDataSetChanged();
+                    }
                 } else {
                     // Handle other user inputs and provide appropriate responses
                     // For example:
