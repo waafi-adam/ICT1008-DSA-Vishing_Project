@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -34,18 +35,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
-public class MainActivity extends AppCompatActivity implements ChatAdapter.OnItemClickListener, MediaPlayer.OnCompletionListener {
+public class MainActivity extends AppCompatActivity implements ChatAdapter.OnItemClickListener{
     private static final int PERMISSION_REQUEST_CODE = 1;
     ChatAdapter adapter;
     RecyclerView recyclerView;
     FrameLayout layoutSend, btnrecord;
     EditText etInputMsg;
-    private SeekBar seekBar;
-    private ImageButton imgbtn;
-    private Handler handler;
-    private Runnable runnable;
     private MediaRecorder mediaRecorder;
-    private MediaPlayer mediaPlayer;
     private String AudioSavePath = null;
     Random random ;
     String RandomAudioFileName = "ABCDEFGHIJKLMNOP";
@@ -134,48 +130,55 @@ public class MainActivity extends AppCompatActivity implements ChatAdapter.OnIte
             }
         });
         btnrecord.setOnTouchListener(new View.OnTouchListener() {
+            private final Handler handler = new Handler();
+            private final Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    //start recording
+                    if (checkPermissions()){
+                        // Create a timestamped file name
+                        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+                        String fileName = "Recording_" + timeStamp + ".3gp";
+
+                        // Get the app's private external storage directory
+                        File externalFilesDir = getExternalFilesDir(null);
+                        if (externalFilesDir != null) {
+                            // Create a directory for recordings if it doesn't exist
+                            File recordingsDir = new File(externalFilesDir, "Recordings");
+                            recordingsDir.mkdirs();
+
+                            // Create the record file
+                            File recordFile = new File(recordingsDir, fileName);
+                            AudioSavePath = recordFile.getAbsolutePath(); //file location: /storage/emulated/0/Android/data/com.example.chatbotapplication/files/Recordings/
+
+                            // Initialize and configure the MediaRecorder
+                            mediaRecorder = new MediaRecorder();
+                            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+                            mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+                            mediaRecorder.setOutputFile(AudioSavePath);
+
+                            try {
+                                mediaRecorder.prepare();
+                                mediaRecorder.start();
+                                Toast.makeText(MainActivity.this, "Recording started", Toast.LENGTH_SHORT).show();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                Toast.makeText(MainActivity.this, "Recording failed", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                    }else{
+                        requestPermissions();
+                    }
+                }
+            };
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()){
                     case MotionEvent.ACTION_DOWN:
-                        //start recording
-                        if (checkPermissions()){
-                            // Create a timestamped file name
-                            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-                            String fileName = "Recording_" + timeStamp + ".3gp";
-
-                            // Get the app's private external storage directory
-                            File externalFilesDir = getExternalFilesDir(null);
-                            if (externalFilesDir != null) {
-                                // Create a directory for recordings if it doesn't exist
-                                File recordingsDir = new File(externalFilesDir, "Recordings");
-                                recordingsDir.mkdirs();
-
-                                // Create the record file
-                                File recordFile = new File(recordingsDir, fileName);
-                                AudioSavePath = recordFile.getAbsolutePath(); //file location: /storage/emulated/0/Android/data/com.example.chatbotapplication/files/Recordings/
-
-                                // Initialize and configure the MediaRecorder
-                                mediaRecorder = new MediaRecorder();
-                                mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-                                mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-                                mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-                                mediaRecorder.setOutputFile(AudioSavePath);
-
-                                try {
-                                    mediaRecorder.prepare();
-                                    mediaRecorder.start();
-                                    Toast.makeText(MainActivity.this, "Recording started", Toast.LENGTH_SHORT).show();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                    Toast.makeText(MainActivity.this, "Recording failed", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-
-
-                        }else{
-                            requestPermissions();
-                        }
+                        mediaRecorder = null;
+                        handler.postDelayed(runnable, 1000);
                         return true;
                     case MotionEvent.ACTION_UP:
                         //stop recording
@@ -187,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements ChatAdapter.OnIte
                                 Toast.makeText(MainActivity.this, "Recording stopped", Toast.LENGTH_SHORT).show();
 
                                 //display media player
-                                list_send.add(new chatData("", "", "", 2));
+                                list_send.add(new chatData("", "", ""+AudioSavePath, 2));
                                 adapter.notifyDataSetChanged();
 
 
@@ -224,108 +227,10 @@ public class MainActivity extends AppCompatActivity implements ChatAdapter.OnIte
             }
         }
     }
-    public String CreateRandomAudioFileName(int string){
-        StringBuilder stringBuilder = new StringBuilder( string );
-        int i = 0 ;
-        while(i < string ) {
-            stringBuilder.append(RandomAudioFileName.charAt(random.nextInt(RandomAudioFileName.length())));
-
-            i++ ;
-        }
-        return stringBuilder.toString();
-    }
-
-
-    private void initializeSeekBar() {
-        seekBar = findViewById(R.id.seekBar);
-        imgbtn = findViewById(R.id.ibPlay);
-        handler = new Handler();
-
-        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mediaPlayer) {
-                // Set the maximum value of the SeekBar to the audio duration
-                seekBar.setMax(mediaPlayer.getDuration());
-                // Start updating the SeekBar progress
-                updateSeekBar();
-            }
-        });
-
-        seekBar.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return true;
-            }
-        });
-        // SeekBar change listener
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (fromUser) {
-                    // Seek to the selected progress when the user drags the SeekBar
-                    mediaPlayer.seekTo(progress);
-                }
-                if (progress == seekBar.getMax()) {
-                    imgbtn.setImageResource(R.drawable.ic_action_play);
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                // Remove the callback to stop updating the SeekBar progress
-                handler.removeCallbacks(runnable);
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                // Resume updating the SeekBar progress
-                updateSeekBar();
-            }
-        });
-    }
-
-    private void updateSeekBar() {
-        if (mediaPlayer != null) {
-            // Update the SeekBar progress with the current position
-            seekBar.setProgress(mediaPlayer.getCurrentPosition());
-            // Delayed call to update the SeekBar progress every second
-            handler.postDelayed(runnable, 1000);
-        }
-    }
-
-    // ...
-
-    @Override
-    public void onCompletion(MediaPlayer mediaPlayer) {
-        // Stop updating the SeekBar progress when audio playback finishes
-        handler.removeCallbacks(runnable);
-        seekBar.setProgress(0);
-    }
 
     @Override
     public void onItemClick(int position) {
         //play recording
-        mediaPlayer = new MediaPlayer();
-        try {
-            mediaPlayer.setDataSource(AudioSavePath);
-            mediaPlayer.prepare();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-        // Initialize the SeekBar and setup progress updates
-        initializeSeekBar();
-        // Set up the runnable for updating the SeekBar progress
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-                updateSeekBar();
-            }
-        };
-        //
-
-        mediaPlayer.start();
 
     }
 }
