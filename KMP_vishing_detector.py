@@ -68,7 +68,7 @@ for word in nonspam_word_freq:
         del spam_word_freq[word]
 
 # Get top 20 words for each spam type
-top_n = 20
+top_n = 30
 spam_types = spam_df['Spam_Type'].unique()
 top_words = {spam_type: {} for spam_type in spam_types}
 
@@ -83,12 +83,40 @@ for spam_type in spam_types:
         failure_function = prepare_failure_function(word)
         top_words[spam_type][word] = {'freq': freq, 'failure_function': failure_function}
 
+# Remove shared words from the top_words and add them to the shared_spam_words category
+shared_spam_words = {}
+
+for spam_type in spam_types:
+    for word in list(top_words[spam_type].keys()):
+        shared = False
+        for other_spam_type in spam_types:
+            if other_spam_type != spam_type and (word in top_words[other_spam_type] or word in shared_spam_words):
+                shared_spam_words[word] = top_words[spam_type].pop(word)
+                shared = True
+                break
+        if shared:
+            top_words[spam_type] = dict(top_words[spam_type])  # Convert back to regular dictionary
+
+# Add shared_spam_words category to top_words
+top_words['shared_spam_words'] = shared_spam_words
+
+# Now the top_words dictionary contains the top 20 words for each spam type and shared_spam_words
+
+# Print the top_words dictionary with formatting
+import pprint
+
+pp = pprint.PrettyPrinter(indent=4)
+
+for spam_type, words_info in top_words.items():
+    print(f"Spam Type: {spam_type}")
+    print("Top Words:")
+    for word in words_info.keys():
+        print(word)
+    print()
+
 # Now you can use `top_words` dictionary in your further analysis
 
-
-print(top_words)
-
-
+import csv
 import re
 
 # KMP search function
@@ -110,19 +138,12 @@ def kmp_search(text, pattern, failure):
                 i += 1
     return matches
 
-# Input samples
-input_samples = [
-      "Congratulations! You've won the grand prize of $1,000,000. Please provide your personal and bank details to claim your prize immediately.",
-    "Dear Customer, we noticed some unusual activities in your account. For security purposes, please verify your account details by clicking the link below.",
-    "Hello, this is a reminder to submit your tax documents by the due date. Failure to comply may result in penalties. Please ensure timely submission.",
-    "URGENT: Your credit card has been compromised. We detected multiple unauthorized transactions. Please call our hotline immediately to secure your account.",
-    "Hey John, hope you're doing well. Just wanted to touch base on our project. Can we have a meeting tomorrow?",
-    "Congratulations on winning the annual employee award! I noticed some unusual activities in your performance, you've really stepped up your game this year!",
-    "Congratulations! You've won our grand prize draw! Click the link below to claim your prize immediately. Hurry up!",
-    "Congratulations! You've won our grand prize draw! Click the link below to claim your prize immediately. Hurry up!",
-    "Dear Customer, you've been selected for an exclusive offer! Click below to verify your account and claim your gift.",
-    "Hey there, just wanted to let you know about the new sale at our store. Also, you've been selected for a chance to win a $1,000 gift card! Click below to claim your gift."
-]
+# Load test cases from CSV
+test_cases = []
+with open('test_cases.csv', 'r') as file:
+    reader = csv.reader(file)
+    for row in reader:
+        test_cases.append(row)
 
 # Calculate the sum of the word frequencies in top_words
 sum_freq_top_words = sum(word_info['freq'] for spam_type in top_words for word_info in top_words[spam_type].values())
@@ -131,8 +152,14 @@ sum_freq_top_words = sum(word_info['freq'] for spam_type in top_words for word_i
 perc_top_words_spam = (sum_freq_top_words / total_words_spam) * 100
 perc_top_words_nonspam = (sum_freq_top_words / total_words_nonspam) * 100
 
-# Loop through input samples
-for idx, input_sample in enumerate(input_samples, 1):
+# Initialize accuracy and total datasets
+accuracy_sum = 0
+total_datasets = len(test_cases)
+
+# Loop through test cases
+for idx, test_case in enumerate(test_cases, 1):
+    input_sample, expected_label = test_case[1], test_case[2]
+
     # Prepare text input
     text = re.sub(r'\W+', ' ', input_sample.lower())
     total_matches = 0
@@ -156,8 +183,23 @@ for idx, input_sample in enumerate(input_samples, 1):
     # Identify most likely spam type
     most_likely_spam_type = max(spam_type_matches, key=spam_type_matches.get)
 
-    print(f"Input Sample {idx}:")
+    # Determine the predicted label
+    predicted_label = "Vishing" if spam_likelihood >= 50 else "Not Vishing"
+
+    # Check if the predicted label matches the expected label
+    if predicted_label == expected_label:
+        accuracy_sum += 1
+
+    print(f"Test Case {idx}:")
     print(f"Text: {input_sample}")
-    print(f"Likelihood of spam: {spam_likelihood:.2f}%")
-    print(f"Most likely spam type: {most_likely_spam_type}")
+    print(f"Expected Label: {expected_label}")
+    print(f"Predicted Label: {predicted_label}")
+    if predicted_label == "Vishing":
+        print(f"Predicted Spam Type: {most_likely_spam_type}")
+    print(f"Spam Likelihood: {spam_likelihood}")
     print()
+
+# Calculate average accuracy
+avg_accuracy = (accuracy_sum / total_datasets) * 100
+
+print(f"Average Accuracy: {avg_accuracy:.2f}%")
