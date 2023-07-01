@@ -150,7 +150,6 @@ sum_freq_top_words = sum(word_info['freq'] for spam_type in top_words for word_i
 
 # Calculate the percentages
 perc_top_words_spam = (sum_freq_top_words / total_words_spam) * 100
-perc_top_words_nonspam = (sum_freq_top_words / total_words_nonspam) * 100
 
 # Initialize accuracy and total datasets
 accuracy_sum = 0
