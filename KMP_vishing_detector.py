@@ -2,6 +2,8 @@ import pandas as pd
 import string
 import re
 from collections import Counter
+import csv
+import pprint
 
 # Function to preprocess and tokenize text
 def tokenize_text(text):
@@ -103,7 +105,6 @@ top_words['shared_spam_words'] = shared_spam_words
 # Now the top_words dictionary contains the top 20 words for each spam type and shared_spam_words
 
 # Print the top_words dictionary with formatting
-import pprint
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -115,9 +116,6 @@ for spam_type, words_info in top_words.items():
     print()
 
 # Now you can use `top_words` dictionary in your further analysis
-
-import csv
-import re
 
 # KMP search function
 def kmp_search(text, pattern, failure):
@@ -138,26 +136,16 @@ def kmp_search(text, pattern, failure):
                 i += 1
     return matches
 
-# Load test cases from CSV
-test_cases = []
-with open('test_cases.csv', 'r') as file:
-    reader = csv.reader(file)
-    for row in reader:
-        test_cases.append(row)
-
 # Calculate the sum of the word frequencies in top_words
 sum_freq_top_words = sum(word_info['freq'] for spam_type in top_words for word_info in top_words[spam_type].values())
 
 # Calculate the percentages
 perc_top_words_spam = (sum_freq_top_words / total_words_spam) * 100
 
-# Initialize accuracy and total datasets
-accuracy_sum = 0
-total_datasets = len(test_cases)
-
-# Loop through test cases
-for idx, test_case in enumerate(test_cases, 1):
-    input_sample, expected_label = test_case[1], test_case[2]
+def detect_vishing(input_sample: str):
+    # Preprocess and tokenize text
+    # Don't forget to load your datasets here if you haven't done so globally
+    # You should probably cache your datasets and top_words after initial load
 
     # Prepare text input
     text = re.sub(r'\W+', ' ', input_sample.lower())
@@ -185,20 +173,40 @@ for idx, test_case in enumerate(test_cases, 1):
     # Determine the predicted label
     predicted_label = "Vishing" if spam_likelihood >= 50 else "Not Vishing"
 
-    # Check if the predicted label matches the expected label
-    if predicted_label == expected_label:
-        accuracy_sum += 1
+    return predicted_label, spam_likelihood, most_likely_spam_type
 
-    print(f"Test Case {idx}:")
-    print(f"Text: {input_sample}")
-    print(f"Expected Label: {expected_label}")
-    print(f"Predicted Label: {predicted_label}")
-    if predicted_label == "Vishing":
-        print(f"Predicted Spam Type: {most_likely_spam_type}")
-    print(f"Spam Likelihood: {spam_likelihood}")
-    print()
+if __name__ == "__main__":
+    # This will only be executed when you run this script directly
+    # and not when you import from another script.
+    test_cases = []
+    with open('test_cases.csv', 'r') as file:
+        reader = csv.reader(file)
+        for row in reader:
+            test_cases.append(row)
 
-# Calculate average accuracy
-avg_accuracy = (accuracy_sum / total_datasets) * 100
+    # Initialize accuracy and total datasets
+    accuracy_sum = 0
+    total_datasets = len(test_cases)
 
-print(f"Average Accuracy: {avg_accuracy:.2f}%")
+    # Loop through test cases
+    for idx, test_case in enumerate(test_cases, 1):
+        input_sample, expected_label = test_case[1], test_case[2]
+        predicted_label, spam_likelihood, most_likely_spam_type = detect_vishing(input_sample)
+
+        # Check if the predicted label matches the expected label
+        if predicted_label == expected_label:
+            accuracy_sum += 1
+
+        print(f"Test Case {idx}:")
+        print(f"Text: {input_sample}")
+        print(f"Expected Label: {expected_label}")
+        print(f"Predicted Label: {predicted_label}")
+        if predicted_label == "Vishing":
+            print(f"Predicted Spam Type: {most_likely_spam_type}")
+        print(f"Spam Likelihood: {spam_likelihood}")
+        print()
+
+    # Calculate average accuracy
+    avg_accuracy = (accuracy_sum / total_datasets) * 100
+
+    print(f"Average Accuracy: {avg_accuracy:.2f}%")
