@@ -4,6 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 import pandas as pd
 import numpy as np
+from telegram import ReplyKeyboardMarkup
 
 class MyDecisionTreeClassifier:
 
@@ -21,7 +22,11 @@ class MyDecisionTreeClassifier:
         self.dt_model = self.train_model()
 
     def start_quiz(self, update, context):
-        context.bot.send_message(chat_id=update.effective_chat.id, text=self.questions[self.index])
+        # Define a custom keyboard
+        custom_keyboard = [['Yes', 'No']]
+        reply_markup = ReplyKeyboardMarkup(custom_keyboard)
+        # Send a message with the custom keyboard
+        context.bot.send_message(chat_id=update.effective_chat.id, text=self.questions[self.index], reply_markup=reply_markup)
 
     def collect_response(self, update, context):
         # Here, we assume the responses are 'yes' or 'no', and map them to 1 and 0 respectively
@@ -37,15 +42,19 @@ class MyDecisionTreeClassifier:
     def analyze_responses(self):
         pred = self.dt_model.predict([self.responses])
         self.reset()
-        return "Potential vishing detected." if pred[0] == 1 else "No vishing detected."
+        
+        if pred[0] == 1:
+            return "🚨 *Detective Mode On!* 🚨 Based on your responses in the quiz, it seems you're dealing with a potential vishing attempt! Stay alert and be sure to protect your personal information."
+        else:
+            return "🎉 *Good News!* 🎉 Based on your responses, it seems that the situation you're dealing with is safe. However, always stay alert!"
+
 
     def reset(self):
         self.responses = []
         self.index = 0
 
     def train_model(self):
-        # You should replace this with your actual data
-        df = pd.read_csv('data.csv')
+        df = pd.read_csv('quiz_dataset.csv')
         X = df.iloc[:, :-1].values
         y = df.iloc[:, -1].values
 
