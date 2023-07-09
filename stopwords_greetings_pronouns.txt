@@ -147,6 +147,8 @@ it
 its
 itself
 we
+weve
+youve
 us
 ourselves
 they
@@ -205,4 +207,3 @@ were
 has
 have
 had
-
