@@ -1,0 +1,121 @@
+Index,Transcript,Label
+1,"Hi, this is a courtesy call to remind you about your upcoming appointment with the dentist.",Not Vishing
+2,"Hello, we are calling to confirm your reservation for the upcoming workshop.",Not Vishing
+3,"Urgent! Your social media account has been hacked. Provide your login credentials for immediate assistance.",Vishing
+4,"Good evening! We are calling to inform you about a special promotion at our store.",Not Vishing
+5,"Congratulations! You have won a shopping spree. Share your personal information to claim it.",Vishing
+6,"Hello, I'm calling from your internet service provider to discuss an upgrade option.",Not Vishing
+7,"Hi, this is a reminder to review your recent purchase on our online store.",Not Vishing
+8,"Your account has been compromised. Share your username and password to secure it.",Vishing
+9,"Good day! We are conducting a customer feedback survey to improve our services.",Not Vishing
+10,"You have won a free vacation package. Provide your personal details to claim it.",Vishing
+11,"Hello, we are calling to schedule a maintenance appointment for your vehicle.",Not Vishing
+12,"We have noticed suspicious activity on your bank account. Please confirm your details for verification.",Vishing
+13,"This is a courtesy call to inform you about an upcoming event in your area.",Not Vishing
+14,"You are selected as the winner of our monthly lottery. Kindly provide your information to claim the prize.",Vishing
+15,"We have detected a virus on your computer. Please provide remote access for immediate removal.",Vishing
+16,"Hello, we are calling from the credit card company to offer you a lower interest rate.",Not Vishing
+17,"You have won a free trip to a tropical paradise. Share your personal details to claim your prize.",Vishing
+18,"This is a reminder to renew your subscription before it expires.",Not Vishing
+19,"Congratulations! Your mobile number has been chosen as the lucky winner. Provide your details for verification.",Vishing
+20,"We are calling to discuss an exclusive investment opportunity. Please share your financial information.",Not Vishing
+21,"Your package delivery is scheduled for tomorrow. Confirm your availability for a smooth delivery process.",Not Vishing
+22,"You have been selected for a survey. Share your opinions to win exciting rewards.",Not Vishing
+23,"We are calling to inform you about a discount offer on your favorite products.",Not Vishing
+24,"Your bank account has been locked. Provide your account details to unlock it.",Vishing
+25,"You have been pre-approved for a credit card. Share your personal information to proceed with the application.",Vishing
+26,"This is a courtesy call to remind you about your upcoming bill payment.",Not Vishing
+27,"You are the lucky winner of a luxury car. Share your information to claim your prize.",Vishing
+28,"We have noticed unauthorized activity on your PayPal account. Please provide your account details for verification.",Vishing
+29,"Hello, we are calling to invite you to our exclusive VIP event. RSVP to secure your spot.",Not Vishing
+30,"Your credit card has been charged for an expensive purchase. Call us immediately to cancel and secure your account.",Vishing
+31,"You have won a cash prize. Provide your bank account details for the prize transfer.",Vishing
+32,"We are conducting a short survey on customer satisfaction. Share your feedback for a chance to win a gift card.",Not Vishing
+33,"Congratulations! You have been selected for a free home security system. Provide your address for installation.",Vishing
+34,"Your computer has been infected with malware. Call our technical support for immediate assistance.",Vishing
+35,"We are calling to confirm your appointment with the doctor tomorrow.",Not Vishing
+36,"You have won a dream vacation. Share your personal information to claim your prize.",Vishing
+37,"This is a courtesy call to inform you about a change in your flight schedule.",Not Vishing
+38,"You are eligible for a free upgrade on your mobile phone plan. Call us to avail the offer.",Not Vishing
+39,"Your credit card has been blocked due to suspicious activity. Provide your card details to unblock it.",Vishing
+40,"Hello, we are calling to offer you a special discount on your next purchase.",Not Vishing
+41,"You have won a gift voucher. Share your details to claim your prize.",Vishing
+42,"We have detected a security breach in your email account. Provide your password for immediate resolution.",Vishing
+43,"Good afternoon! We are conducting a survey to gather feedback on our recent product release.",Not Vishing
+44,"You have been selected for a free trial of our premium membership. Provide your details to activate it.",Not Vishing
+45,"We are calling to remind you about the upcoming deadline for your bill payment.",Not Vishing
+46,"Congratulations! You have won a brand new smartphone. Share your information to claim it.",Vishing
+47,"This is a courtesy call to inform you about an exciting event happening in your city.",Not Vishing
+48,"You have been randomly selected for a customer satisfaction survey. Share your feedback to win a prize.",Not Vishing
+49,"We are calling to inform you about a discount offer on your favorite products.",Not Vishing
+50,"Your bank account is suspected of fraudulent activity. Share your account details for investigation.",Vishing
+51,"You have won a trip to a luxury resort. Provide your personal information to book your stay.",Vishing
+52,"This is a reminder to update your password for better account security.",Not Vishing
+53,"You are eligible for a special discount on your next flight booking. Call us to avail the offer.",Not Vishing
+54,"Your credit card has been charged for an unauthorized transaction. Call us immediately to report and reverse it.",Vishing
+55,"You have won a gift card. Share your details to receive your prize.",Vishing
+56,"We are conducting a market research survey. Share your opinions for a chance to win a reward.",Not Vishing
+57,"Congratulations! You have won a cash prize. Provide your bank account details for the prize transfer.",Vishing
+58,"This is a courtesy call to remind you about your upcoming subscription renewal.",Not Vishing
+59,"You have been selected for a free home makeover. Provide your address for a consultation.",Not Vishing
+60,"We have detected a virus on your phone. Please provide remote access for immediate removal.",Vishing
+61,"We are calling to confirm your appointment with the hairstylist.",Not Vishing
+62,"You have won a luxury cruise vacation. Share your personal information to claim your prize.",Vishing
+63,"Hello, we are calling to inform you about a change in your credit card terms and conditions.",Not Vishing
+64,"You have been selected for a loyalty program. Provide your details to enroll and enjoy exclusive benefits.",Not Vishing
+65,"Your email account has been temporarily suspended. Provide your account information to reactivate it.",Vishing
+66,"We are calling to remind you about the upcoming deadline for your tax filing.",Not Vishing
+67,"You have won a discount voucher for your favorite restaurant. Share your details to receive it.",Vishing
+68,"This is a courtesy call to inform you about a product recall for safety reasons.",Not Vishing
+69,"You have been selected for a free trial of our software. Provide your details to activate the trial.",Not Vishing
+70,"We are calling to offer you a complimentary magazine subscription. Provide your address to receive it.",Not Vishing
+71,"Your credit card has been randomly selected for a cashback offer. Share your details to avail it.",Vishing
+72,"You have won a gift hamper. Share your details to receive your prize.",Vishing
+73,"We are conducting a survey on consumer preferences. Share your feedback to win a reward.",Not Vishing
+74,"Congratulations! You have won a vacation package. Provide your personal information to claim it.",Vishing
+75,"This is a courtesy call to remind you about your upcoming doctor's appointment.",Not Vishing
+76,"You have been chosen as a beta tester for our new mobile app. Provide your details to participate.",Not Vishing
+77,"We are calling to inform you about a special discount on your favorite online store.",Not Vishing
+78,"Your bank account needs verification. Share your account details to complete the process.",Vishing
+79,"You have won a gift card for your favorite restaurant. Share your details to receive it.",Vishing
+80,"This is a courtesy call to inform you about a product recall for safety reasons.",Not Vishing
+81,"You have been selected for a free trial of our software. Provide your details to activate the trial.",Not Vishing
+82,"We are calling to offer you a complimentary magazine subscription. Provide your address to receive it.",Not Vishing
+83,"Your credit card has been randomly selected for a cashback offer. Share your details to avail it.",Vishing
+84,"You have won a gift hamper. Share your details to receive your prize.",Vishing
+85,"We are conducting a survey on consumer preferences. Share your feedback to win a reward.",Not Vishing
+86,"Congratulations! You have won a cash prize. Provide your bank account details for the prize transfer.",Vishing
+87,"This is a courtesy call to remind you about your upcoming subscription renewal.",Not Vishing
+88,"You have been selected for a free home makeover. Provide your address for a consultation.",Not Vishing
+89,"We have detected a virus on your phone. Please provide remote access for immediate removal.",Vishing
+90,"We are calling to confirm your appointment with the hairstylist.",Not Vishing
+91,"You have won a luxury cruise vacation. Share your personal information to claim your prize.",Vishing
+92,"Hello, we are calling to inform you about a change in your credit card terms and conditions.",Not Vishing
+93,"You have been selected for a loyalty program. Provide your details to enroll and enjoy exclusive benefits.",Not Vishing
+94,"Your email account has been temporarily suspended. Provide your account information to reactivate it.",Vishing
+95,"We are calling to remind you about the upcoming deadline for your tax filing.",Not Vishing
+96,"You have won a discount voucher for your favorite restaurant. Share your details to receive it.",Vishing
+97,"This is a courtesy call to inform you about a product recall for safety reasons.",Not Vishing
+98,"You have been selected for a free trial of our software. Provide your details to activate the trial.",Not Vishing
+99,"We are calling to offer you a complimentary magazine subscription. Provide your address to receive it.",Not Vishing
+100,"Your credit card has been randomly selected for a cashback offer. Share your details to avail it.",Vishing
+101,"You have won a gift hamper. Share your details to receive your prize.",Vishing
+102,"We are conducting a survey on consumer preferences. Share your feedback to win a reward.",Not Vishing
+103,"Congratulations! You have won a vacation package. Provide your personal information to claim it.",Vishing
+104,"This is a courtesy call to remind you about your upcoming doctor's appointment.",Not Vishing
+105,"You have been chosen as a beta tester for our new mobile app. Provide your details to participate.",Not Vishing
+106,"We are calling to inform you about a special discount on your favorite online store.",Not Vishing
+107,"Your bank account needs verification. Share your account details to complete the process.",Vishing
+108,"You have won a gift card for your favorite restaurant. Share your details to receive it.",Vishing
+109,"This is a courtesy call to inform you about a product recall for safety reasons.",Not Vishing
+110,"You have been selected for a free trial of our software. Provide your details to activate the trial.",Not Vishing
+111,"We are calling to offer you a complimentary magazine subscription. Provide your address to receive it.",Not Vishing
+112,"Your credit card has been randomly selected for a cashback offer. Share your details to avail it.",Vishing
+113,"You have won a gift hamper. Share your details to receive your prize.",Vishing
+114,"We are conducting a survey on consumer preferences. Share your feedback to win a reward.",Not Vishing
+115,"Congratulations! You have won a cash prize. Provide your bank account details for the prize transfer.",Vishing
+116,"This is a courtesy call to remind you about your upcoming subscription renewal.",Not Vishing
+117,"You have been selected for a free home makeover. Provide your address for a consultation.",Not Vishing
+118,"We have detected a virus on your phone. Please provide remote access for immediate removal.",Vishing
+119,"We are calling to confirm your appointment with the hairstylist.",Not Vishing
+120,"You have won a luxury cruise vacation. Share your personal information to claim your prize.",Vishing
