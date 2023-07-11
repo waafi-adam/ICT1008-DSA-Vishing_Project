@@ -6,12 +6,13 @@ import pandas as pd
 def load_detection_modules(path='detection_modules'):
     modules = {}
     for filename in os.listdir(path):
-        if filename.endswith('.py'):
+        if filename.endswith('.py') and filename != 'quiz_decision_tree.py':
             spec = importlib.util.spec_from_file_location(filename[:-3], os.path.join(path, filename))
             module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(module)
             modules[filename[:-3]] = module
     return modules
+
 
 def detect_vishing(input_text, modules):
     results = {}

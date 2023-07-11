@@ -14,28 +14,52 @@ vishing_detector = importlib.import_module('detection_modules.trie_vishing_detec
 
 QUIZ, END = range(2)
 
-def set_module(update: Update, context: CallbackContext) -> None:
-    if context.args:
-        module_name = ' '.join(context.args)
-        if module_name not in ['cosineSim', 'gensim', 'kmp', 'nltk', 'sklearn', 'spacy', 'trie']:
-            update.message.reply_text(f'Oops! 🙅‍♂️ Invalid module name: {module_name}\nTry one from these: cosineSim, gensim, kmp, nltk, sklearn, spacy, trie.')
-        else:
-            update.message.reply_text(f'Hang on... 🔄 Loading module: {module_name}...')
-            global vishing_detector
-            vishing_detector = importlib.import_module(f'detection_modules.{module_name}_vishing_detection')
-            update.message.reply_text(f'All set! ✅ Detection module changed to: {module_name}')
-    else:
-        update.message.reply_text(f'Current detection module is: {vishing_detector.__name__}\nTo switch it up, use the command: /set_module <module_name>')
+def set_module(update: Update, context: CallbackContext) -> int:
+    # Extract the method name from the module name string
+    current_module = vishing_detector.__name__.split('.')[1].replace('_vishing_detection', '')
+    
+    keyboard = [
+        [InlineKeyboardButton("CosineSim", callback_data='cosineSim'),
+        InlineKeyboardButton("Gensim", callback_data='gensim')],
+        [InlineKeyboardButton("KMP", callback_data='kmp'),
+        InlineKeyboardButton("NLTK", callback_data='nltk')],
+        [InlineKeyboardButton("Sklearn", callback_data='sklearn'),
+        InlineKeyboardButton("Spacy", callback_data='spacy')],
+        [InlineKeyboardButton("Trie", callback_data='trie')]
+    ]
+
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    update.message.reply_text(
+        f'🔧 Current detection module is: {current_module}. \n'
+        'Please choose a detection module from the menu below:', reply_markup=reply_markup
+    )
+
+
+def module_selection(update: Update, context: CallbackContext) -> None:
+    query = update.callback_query
+    query.answer()
+    module_name = query.data
+
+    update.effective_message.edit_text(f'Hang on... 🔄 Loading module: {module_name}...')
+    global vishing_detector
+    vishing_detector = importlib.import_module(f'detection_modules.{module_name}_vishing_detection')
+    update.effective_message.edit_text(f'All set! ✅ Detection module changed to: {module_name}')
+
 
 def start(update: Update, context: CallbackContext) -> None:
-    context.user_data['state'] = 'IDLE'  
+    context.user_data['state'] = 'IDLE'
+
+    # Extract the method name from the module name string
+    current_module = vishing_detector.__name__.split('.')[1].replace('_vishing_detection', '')
 
     update.message.reply_text(
         f'👋 Hello there! Ready to test messages or audios for vishing? Just send them over! \n\n'
-        'Feeling like a detective? 🔍 Start a vishing detection quiz with /quiz. \n\n'
-        f'🔧 We are currently using the {vishing_detector.__name__} detection module. '
-        'Want to try another module? Use /set_module <module_name>. Available modules are: cosineSim, gensim, kmp, nltk, sklearn, spacy, trie.'
+        '🔍 Feeling like a detective? Start a vishing detection quiz with /quiz. \n\n'
+        f'🔧 We are currently using the {current_module} detection module. '
+        'Want to try another module? Use /set_module to choose from the available modules.'
     )
+
 
 
 def button(update: Update, context: CallbackContext) -> None:
@@ -125,6 +149,7 @@ updater.dispatcher.add_handler(CommandHandler('start', start))
 updater.dispatcher.add_handler(quiz_handler)
 updater.dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, detect_vishing))
 updater.dispatcher.add_handler(MessageHandler(Filters.voice, handle_audio))
+updater.dispatcher.add_handler(CallbackQueryHandler(module_selection))
 
 updater.start_polling()
 updater.idle()
