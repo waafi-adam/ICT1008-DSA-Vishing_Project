@@ -3,7 +3,7 @@ import importlib
 from telegram import Update, ReplyKeyboardMarkup, ReplyKeyboardRemove, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, ConversationHandler, CallbackQueryHandler
 import speech_recognition as sr
-from decision_tree_classifier import MyDecisionTreeClassifier
+from detection_modules.quiz_decision_tree import MyDecisionTreeClassifier
 
 # setup telegram bot
 updater = Updater(token='6319055640:AAFmM5rltpmE3J-x6fj7LPHxTWt_X0rsVjY', use_context=True)
