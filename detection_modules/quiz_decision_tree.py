@@ -54,7 +54,7 @@ class MyDecisionTreeClassifier:
         self.index = 0
 
     def train_model(self):
-        df = pd.read_csv('resources/quiz_dataset.csv')
+        df = pd.read_csv('quiz_dataset.csv')
         X = df.iloc[:, :-1].values
         y = df.iloc[:, -1].values
 
