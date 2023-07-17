@@ -1,0 +1,101 @@
+Index,Transcript,Label
+1,"Hello, this is DBS Bank calling. We've detected some suspicious activity on your account. Could you verify your account number and PIN?",Vishing
+2,"Hey, it's me. Just checking in to see if you are coming to the family dinner tonight.",Not Vishing
+3,"Hello, this is from the Inland Revenue Authority of Singapore. There seems to be an issue with your tax records. We need your SingPass to correct this.",Vishing
+4,"Good day, this is StarHub. We're offering a new plan for our loyal customers. Would you like to hear more about it?",Not Vishing
+5,"Congratulations, you have won a lucky draw from TOTO. Please provide your bank details to receive the prize money.",Vishing
+6,"Hello, this is the NUS administrative office. We need to confirm your registration for the upcoming semester. Can you provide your student ID?",Not Vishing
+7,"Hi, it's John from next door. Could you please look after my plants while I am away this weekend?",Not Vishing
+8,"Hello, we are from the Singapore Police Force. There is a warrant for your arrest due to unpaid taxes. To resolve this issue, please give your SingPass details.",Vishing
+9,"Hey, it's Mum. Can you pick up some groceries on your way home?",Not Vishing
+10,"Hello, we are from the Red Cross Singapore. We are conducting a fundraising campaign. Would you like to contribute?",Not Vishing
+11,"Hello, this is from the Ministry of Manpower. We have identified discrepancies in your employment record. Can you confirm your SingPass to rectify this?",Vishing
+12,"Good day, this is from Sheng Siong supermarket. You've won our customer lucky draw. Can you confirm your name and contact number to claim your prize?",Not Vishing
+13,"Hi, it's your driving instructor. We need to reschedule our lesson due to a scheduling conflict. Is tomorrow okay?",Not Vishing
+14,"Hello, we are calling from the Central Provident Fund Board. Your CPF account has been compromised. Can you verify your account details with us?",Vishing
+15,"Hi, this is from Grab. We're calling to confirm your ride details. Could you confirm your pick-up location?",Not Vishing
+16,"Good day, this is from POSB Bank. Your account shows suspicious activity. We need your account number and PIN to validate this.",Vishing
+17,"Hey, it's your group project partner. Could you send me your part of the project by tonight?",Not Vishing
+18,"Hello, this is from the Ministry of Health. There's an issue with your recent MediSave transaction. Please provide your SingPass to confirm this.",Vishing
+19,"Hi, we're calling from the Land Transport Authority. We need to confirm your vehicle number for a parking offence report.",Not Vishing
+20,"Hello, this is from OCBC Bank. We detected an unauthorized login attempt to your account. Could you verify your account number and PIN?",Vishing
+21,"Hi, we're calling from the HDB. There's been a mix-up in your recent application. Could you confirm your application number?",Not Vishing
+22,"Hello, it's your boss. We need to have an extra team meeting tomorrow to discuss the upcoming project. Is that okay with you?",Not Vishing
+23,"Good day, this is from SingPost. We're confirming your parcel delivery. Can you confirm your address and contact number?",Not Vishing
+24,"Hello, we are from the MOE. We detected discrepancies in your GIRO payment. Can you confirm your bank details and SingPass to validate this?",Vishing
+25,"Hi, we're calling from FoodPanda. We're confirming your order details. Could you confirm your address and order number?",Not Vishing
+26,"Hi, this is Sarah. I am planning a surprise birthday party for Tom. Can you help me with the preparations?",Not Vishing
+27,"Hello, this is from UOB. We noticed unusual transactions on your credit card. Can you provide your card number and CVV for confirmation?",Vishing
+28,"Good day, this is from the National Environment Agency. We are surveying households about recycling habits. Can you spare a few minutes?",Not Vishing
+29,"Hello, we are calling from Singapore Airlines. There has been a change in your flight schedule. Can you confirm your ticket number?",Not Vishing
+30,"Hi, it's your tennis coach. Our session has been rescheduled due to weather conditions. Can we move it to next week?",Not Vishing
+31,"Hello, this is from the Singapore Power Group. We are investigating a power outage in your area. Can you confirm your address?",Vishing
+32,"Hi, we're calling from the Zoo. You've won free tickets from our recent contest. Can you confirm your email to send the tickets?",Not Vishing
+33,"Hello, it's your cousin. I just wanted to check how you're doing after your surgery. Do you need anything?",Not Vishing
+34,"Hello, this is from the CPF Board. There has been an unusual activity in your CPF account. Can you provide your SingPass to verify?",Vishing
+35,"Good day, this is from ComfortDelGro Taxi. We're confirming your booking. Could you confirm the pickup location and time?",Not Vishing
+36,"Hello, this is from the Immigration and Checkpoints Authority. There is an issue with your passport. Could you provide your SingPass to validate this?",Vishing
+37,"Hi, it's your neighbour. I've got a parcel delivered at my address by mistake. It's for you. Can you come pick it up?",Not Vishing
+38,"Hello, this is from the Ministry of Education. There seems to be a problem with your child's school registration. Could you provide your SingPass to verify?",Vishing
+39,"Hey, it's your gym partner. Are we still on for our workout tomorrow morning?",Not Vishing
+40,"Hello, this is from the Monetary Authority of Singapore. Your bank account shows suspicious activity. Could you confirm your account number and PIN?",Vishing
+41,"Hi, we're calling from the National Library Board. The book you requested is now available. Can you come and collect it?",Not Vishing
+42,"Hello, this is from the Ministry of Trade and Industry. There seems to be a problem with your business registration. Could you provide your SingPass to verify?",Vishing
+43,"Hi, it's your classmate. I missed today's lecture. Could you share your notes with me?",Not Vishing
+44,"Hello, we are calling from Singtel. There has been a security breach in our system. Could you provide your account number and PIN to verify?",Vishing
+45,"Good day, this is from NTUC FairPrice. You've won a voucher from our recent lucky draw. Can you confirm your contact number?",Not Vishing
+46,"Hi, it's your daughter. Can you pick me up from school today? My class ends early.",Not Vishing
+47,"Hello, this is from the Housing Development Board. There seems to be an issue with your housing grant application. Could you provide your SingPass to verify?",Vishing
+48,"Hi, this is from the Health Promotion Board. We're conducting a survey on diet habits. Can you spare a few minutes?",Not Vishing
+49,"Hello, it's your friend. I'm organizing a gathering this weekend. Would you like to come?",Not Vishing
+50,"Hello, this is from Standard Chartered Bank. Your credit card has been used for unusual transactions. Could you verify your card number and CVV?",Vishing
+51,"Hi, we're calling from the National Parks Board. We are conducting a survey about park usage. Can you spare a few minutes?",Not Vishing
+52,"Hello, this is from the Ministry of Health. There seems to be a discrepancy in your MediShield Life premium. Could you provide your SingPass to verify?",Vishing
+53,"Hi, it's your son. I will be late from school today due to a project. Can you inform Mum?",Not Vishing
+54,"Hello, we are calling from Citibank. We've detected suspicious activity on your account. Could you confirm your account number and PIN?",Vishing
+55,"Good day, this is from SBS Transit. We're confirming your lost and found report. Could you describe the item you lost?",Not Vishing
+56,"Hey, it's your friend. Just wanted to remind you about our dinner plans tonight.",Not Vishing
+57,"Hello, this is from Maybank. We've detected some suspicious transactions on your credit card. Could you confirm your card number and CVV?",Vishing
+58,"Hi, this is from the National Gallery Singapore. We're confirming your reservation for the upcoming exhibit. Could you confirm your reservation number?",Not Vishing
+59,"Hello, it's your brother. I need help with my math homework. Can you help me out?",Not Vishing
+60,"Hello, this is from the Ministry of Manpower. We've found irregularities in your employment pass application. Could you provide your SingPass to verify?",Vishing
+61,"Hi, we're calling from the Science Centre Singapore. We're confirming your booking for the planetarium show. Could you confirm your booking details?",Not Vishing
+62,"Hello, it's your dentist. We need to reschedule your appointment due to an unexpected event. Is next week okay for you?",Not Vishing
+63,"Hello, this is from the Ministry of Communications and Information. We've detected a breach in your SingPass. Could you confirm your SingPass to validate?",Vishing
+64,"Good day, this is from the Esplanade. We're confirming your ticket booking for the upcoming concert. Could you confirm your ticket number?",Not Vishing
+65,"Hi, it's your hairdresser. We need to reschedule your appointment due to a scheduling conflict. Is next week okay?",Not Vishing
+66,"Hello, this is from ANZ Bank. We've detected some suspicious activity on your account. Could you verify your account number and PIN?",Vishing
+67,"Hi, we're calling from Singapore Pools. You've won our customer lucky draw. Can you confirm your name and contact number to claim your prize?",Not Vishing
+68,"Hello, this is from the Ministry of Finance. There seems to be a problem with your recent tax filing. Could you provide your SingPass to verify?",Vishing
+69,"Hey, it's your colleague. Are we still meeting for lunch tomorrow?",Not Vishing
+70,"Hello, this is from the National Environment Agency. Your recent recycling activity has been noted as suspicious. Could you provide your address to verify?",Vishing
+71,"Hi, this is from KFC. We're calling to confirm your order. Could you confirm your address and order number?",Not Vishing
+72,"Hello, it's your aunt. I baked some cookies for you. Can you drop by and pick them up?",Not Vishing
+73,"Hello, this is from the Public Utilities Board. Your recent water usage is significantly high. Could you verify your account details to check?",Vishing
+74,"Good day, this is from the National Heritage Board. We're conducting a survey on museum visitation habits. Can you spare a few minutes?",Not Vishing
+75,"Hi, it's your friend. I forgot my wallet at your place. Can I come and pick it up?",Not Vishing
+76,"Hello, this is from the Land Transport Authority. We've detected an issue with your vehicle's COE renewal. Could you provide your SingPass to verify?",Vishing
+77,"Hi, we're calling from IKEA. We're confirming your furniture delivery. Could you confirm your address and contact number?",Not Vishing
+78,"Hello, it's your grandmother. Can you come and help me with some house chores this weekend?",Not Vishing
+79,"Hello, this is from the Agri-Food & Veterinary Authority. There's an issue with your recent pet registration. Could you provide your SingPass to validate?",Vishing
+80,"Good day, this is from Watsons. You've won a voucher from our recent lucky draw. Can you confirm your contact number?",Not Vishing
+81,"Hey, it's your friend. Just wanted to check how you are doing after hearing about your accident. Do you need anything?",Not Vishing
+82,"Hello, this is from the Ministry of Defence. We've detected discrepancies in your NS records. Could you provide your SingPass to verify?",Vishing
+83,"Hi, this is from Cathay Cineplexes. We're confirming your movie booking. Could you confirm your booking details?",Not Vishing
+84,"Hello, it's your tutor. We need to reschedule our lesson due to a scheduling conflict. Is tomorrow okay?",Not Vishing
+85,"Hello, this is from the Monetary Authority of Singapore. Your bank account shows suspicious activity. Could you confirm your account number and PIN?",Vishing
+86,"Good day, this is from the National Council of Social Service. We're conducting a survey on social service usage. Can you spare a few minutes?",Not Vishing
+87,"Hi, it's your piano teacher. Our class has been rescheduled due to a conflict. Can we move it to next week?",Not Vishing
+88,"Hello, this is from the Ministry of Home Affairs. We've detected an issue with your recent PR application. Could you provide your SingPass to verify?",Vishing
+89,"Hi, we're calling from Decathlon. We're confirming your order delivery. Could you confirm your address and order number?",Not Vishing
+90,"Hello, it's your dance instructor. The studio has been booked for another event tomorrow. We need to reschedule our class. Is that okay?",Not Vishing
+91,"Hello, this is from the Ministry of Transport. We've detected irregularities in your vehicle registration. Could you provide your SingPass to verify?",Vishing
+92,"Hi, we're calling from the Wild Wild Wet. We're confirming your booking for the water park. Could you confirm your booking details?",Not Vishing
+93,"Hey, it's your friend. I have got tickets to the new Marvel movie. Would you like to join?",Not Vishing
+94,"Hello, this is from the MAS. Your credit card has been used for unusual transactions. Could you verify your card number and CVV?",Vishing
+95,"Good day, this is from GrabFood. We're confirming your food delivery. Could you confirm your address and order number?",Not Vishing
+96,"Hello, it's your sister. I need help with my English homework. Can you help me out?",Not Vishing
+97,"Hello, this is from the Civil Aviation Authority of Singapore. We've found discrepancies in your recent flight booking. Could you provide your SingPass to verify?",Vishing
+98,"Hi, this is from Burger King. We're calling to confirm your order. Could you confirm your address and order number?",Not Vishing
+99,"Hello, it's your yoga instructor. Our class has been rescheduled due to maintenance at the studio. Can we move it to next week?",Not Vishing
+100,"Hello, this is from the Public Transport Council. There seems to be an issue with your concession card. Could you provide your SingPass to verify?",Vishing

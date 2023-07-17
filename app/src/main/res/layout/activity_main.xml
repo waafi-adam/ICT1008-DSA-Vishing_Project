@@ -23,9 +23,9 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="12dp"
         android:padding="5dp"
-        android:src="@drawable/ic_back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
+
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageInfo"
         android:layout_width="30dp"
@@ -34,9 +34,8 @@
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:padding="4dp"
-        android:src="@drawable/ic_info"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
     <TextView
         android:id="@+id/textName"
         android:layout_width="0dp"
@@ -58,12 +57,13 @@
         android:id="@+id/chatRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginBottom="16dp"
         android:clipToPadding="false"
         android:orientation="vertical"
         android:overScrollMode="never"
         android:padding="20dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="@+id/viewBackground"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintTop_toBottomOf="@+id/imageBack" />
 
     <FrameLayout
@@ -96,6 +96,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="12dp"
         android:background="@drawable/background_chat_input"
+        android:focusable="auto"
         android:hint="Type a message"
         android:imeOptions="actionDone"
         android:importantForAutofill="no"
@@ -128,5 +129,37 @@
             app:tint="@color/white" />
 
     </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@+id/viewBackground"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/btnHelp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="#6200ED"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text="How does it work?" />
+        <Button
+            android:id="@+id/btnChkRp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Check Responses"
+            android:backgroundTint="#6200ED"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"/>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

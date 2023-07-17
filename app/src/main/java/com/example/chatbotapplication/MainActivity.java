@@ -1,32 +1,36 @@
 package com.example.chatbotapplication;
 
+import android.Manifest;
+import android.content.ContentResolver;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.media.MediaRecorder;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
+import android.speech.RecognizerIntent;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.media.MediaPlayer;
-import android.media.MediaRecorder;
-import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
-import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewConfiguration;
-import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.SeekBar;
-import android.widget.Toast;
+import com.chaquo.python.PyObject;
 import com.chaquo.python.Python;
 import com.chaquo.python.android.AndroidPlatform;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -37,14 +41,17 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements ChatAdapter.OnItemClickListener{
     private static final int PERMISSION_REQUEST_CODE = 1;
+    private static final int REQUEST_CODE_SPEECH_INPUT = 1;
     ChatAdapter adapter;
     RecyclerView recyclerView;
     FrameLayout layoutSend, btnrecord;
     EditText etInputMsg;
+    Button btnCheckResp, btnHelp;
     private MediaRecorder mediaRecorder;
     private String AudioSavePath = null;
-    Random random ;
-    String RandomAudioFileName = "ABCDEFGHIJKLMNOP";
+    private String AudioSavePath_new = null;
+    private String AudioFileName = null;
+    List<chatData> list_send = new ArrayList<>();
 
     List<String> userResponses = new ArrayList<>();
     @Override
@@ -55,16 +62,13 @@ public class MainActivity extends AppCompatActivity implements ChatAdapter.OnIte
         if (! Python.isStarted()) {
             Python.start(new AndroidPlatform(this));
         }
-        Python py = Python.getInstance();
-//        PyObject module = py.getModule("my_module");
+        Date c = Calendar.getInstance().getTime();
+        SimpleDateFormat df = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+        String formattedDate = df.format(c);
+        list_send.add(new chatData("",
+                formattedDate,
+                "Hello, please enter your text to get the spam likelihood percentage",0));
 
-        List<chatData> list_send = new ArrayList<>();
-        list_send.add(new chatData("",
-                "May 23, 2015",
-                "Best Of Luck",0));
-        list_send.add(new chatData("",
-                "June 09, 2015",
-                "Hello World",0));
 
         recyclerView = (RecyclerView) findViewById(R.id.chatRecyclerView);
 
@@ -78,6 +82,9 @@ public class MainActivity extends AppCompatActivity implements ChatAdapter.OnIte
         layoutSend = (FrameLayout) findViewById(R.id.layoutSend);
         etInputMsg = (EditText) findViewById(R.id.inputMessage);
         btnrecord = (FrameLayout) findViewById(R.id.btnrecord);
+
+        btnCheckResp = (Button) findViewById(R.id.btnChkRp);
+        btnHelp = (Button) findViewById(R.id.btnHelp);
 
         if (checkPermissions()){
             Log.d("Debug","permission already provided");
@@ -103,101 +110,44 @@ public class MainActivity extends AppCompatActivity implements ChatAdapter.OnIte
 
                 etInputMsg.setText(""); //clear the textbox after user click send
 
-                //get a reply upon entering text
-                userinputstr = userinputstr.toLowerCase();
-                userResponses.add(userinputstr);
-                if (userinputstr.contains("i want to report a vishing attack")) {
-                    list_send.add(new chatData("", "", "What happened?", 1));
-                    adapter.notifyDataSetChanged();
-                } else if (userinputstr.contains("i want to check if i got vished")) {
-                    list_send.add(new chatData("", "", "Ok! Send me an audio file for me to analyze.", 1));
-                    adapter.notifyDataSetChanged();
-                } else if (userinputstr.contains("check responses")) {
-                    for (int i = 0; i < userResponses.size(); i++) {
-                        String userResponse = userResponses.get(i);
+                //call get reply function
+                getReply(userinputstr);
 
-                        // Add user's response to the list
-                        list_send.add(new chatData("", "", userResponse, 1));
-                        adapter.notifyDataSetChanged();
-                    }
-                } else {
-                    // Handle other user inputs and provide appropriate responses
-                    // For example:
-                    list_send.add(new chatData("", "", "I'm sorry, I don't understand. Can you please rephrase your question?", 1));
-                    adapter.notifyDataSetChanged();
-                }
+            }
+        });
+        btnCheckResp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String userinputstr = "Check Responses";
+                list_send.add(new chatData("", "", ""+userinputstr, 0));
+                adapter.notifyDataSetChanged();
+                //call get reply function
+                getReply(userinputstr);
+            }
+        });
+        btnHelp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                list_send.add(new chatData("", "", "How does this app works?", 0));
+                adapter.notifyDataSetChanged();
+
+                list_send.add(new chatData("", "", "You may enter the text manually or use the speech to text feature by clicking on the record button on the bottom left. We will then take the text entered and display the percentage of the likelihood that the text is a spam message.", 1));
+                adapter.notifyDataSetChanged();
 
             }
         });
         btnrecord.setOnTouchListener(new View.OnTouchListener() {
-            private final Handler handler = new Handler();
-            private final Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    //start recording
-                    if (checkPermissions()){
-                        // Create a timestamped file name
-                        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-                        String fileName = "Recording_" + timeStamp + ".3gp";
-
-                        // Get the app's private external storage directory
-                        File externalFilesDir = getExternalFilesDir(null);
-                        if (externalFilesDir != null) {
-                            // Create a directory for recordings if it doesn't exist
-                            File recordingsDir = new File(externalFilesDir, "Recordings");
-                            recordingsDir.mkdirs();
-
-                            // Create the record file
-                            File recordFile = new File(recordingsDir, fileName);
-                            AudioSavePath = recordFile.getAbsolutePath(); //file location: /storage/emulated/0/Android/data/com.example.chatbotapplication/files/Recordings/
-
-                            // Initialize and configure the MediaRecorder
-                            mediaRecorder = new MediaRecorder();
-                            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-                            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-                            mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-                            mediaRecorder.setOutputFile(AudioSavePath);
-
-                            try {
-                                mediaRecorder.prepare();
-                                mediaRecorder.start();
-                                Toast.makeText(MainActivity.this, "Recording started", Toast.LENGTH_SHORT).show();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                                Toast.makeText(MainActivity.this, "Recording failed", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-
-                    }else{
-                        requestPermissions();
-                    }
-                }
-            };
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()){
                     case MotionEvent.ACTION_DOWN:
-                        mediaRecorder = null;
-                        handler.postDelayed(runnable, 1000);
+                        //speech to text android version
+                        startSpeechRecognition();
+                        //
+
                         return true;
                     case MotionEvent.ACTION_UP:
-                        //stop recording
-                        if (mediaRecorder != null) {
-                            try {
-                                mediaRecorder.stop();
-                                mediaRecorder.release();
-                                mediaRecorder = null;
-                                Toast.makeText(MainActivity.this, "Recording stopped", Toast.LENGTH_SHORT).show();
 
-                                //display media player
-                                list_send.add(new chatData("", "", ""+AudioSavePath, 2));
-                                adapter.notifyDataSetChanged();
-
-
-                            } catch (IllegalStateException e) {
-                                Log.d("debug recording stop function error",e.toString());
-                            }
-                        }
                         return true;
                 }
                 return false;
@@ -230,7 +180,114 @@ public class MainActivity extends AppCompatActivity implements ChatAdapter.OnIte
 
     @Override
     public void onItemClick(int position) {
-        //play recording
+        Log.d("debug speech to text filename: ",AudioFileName);
 
     }
+    public void startSpeechRecognition() {
+
+        //speech to text android version
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+
+        // secret parameters that when added provide audio url in the result
+        intent.putExtra("android.speech.extra.GET_AUDIO_FORMAT", "audio/AMR");
+        intent.putExtra("android.speech.extra.GET_AUDIO", true);
+        //
+
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,
+                Locale.getDefault());
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak to text");
+
+        try {
+            startActivityForResult(intent, REQUEST_CODE_SPEECH_INPUT);
+        }catch (Exception e) {
+            Log.d("debug",e.toString());
+        }
+
+
+    }
+
+    // handle result of speech recognition
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_SPEECH_INPUT) {
+            if (resultCode == RESULT_OK && data != null) {
+                // the resulting text is in the getExtras:
+                Bundle bundle = data.getExtras();
+                ArrayList<String> matches = bundle.getStringArrayList(RecognizerIntent.EXTRA_RESULTS);
+
+                String userinputstr = matches.get(0).toString();
+                Date c = Calendar.getInstance().getTime();
+                SimpleDateFormat df = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+                String formattedDate = df.format(c);
+                Log.d("Debug send click", formattedDate);
+                list_send.add(new chatData("",
+                        formattedDate,
+                        "" + userinputstr, 0));
+                adapter = new ChatAdapter(list_send, getApplication());
+                recyclerView.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+
+                getReply(userinputstr);
+
+                // the recording url is in getData:
+                Uri audioUri = data.getData();
+                ContentResolver contentResolver = getContentResolver();
+                try {
+                    InputStream filestream = contentResolver.openInputStream(audioUri);
+                } catch (FileNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+                // TODO: read audio file from inputstream
+            }
+        }
+
+    }
+    public void getReply(String userinputstr){
+        //get a reply upon entering text
+        userinputstr = userinputstr.toLowerCase();
+        if (userinputstr.contains("check responses")) {
+            for (int i = 0; i < userResponses.size(); i++) {
+                String userResponse = userResponses.get(i);
+
+                // Add user's response to the list
+                list_send.add(new chatData("", "", userResponse, 1));
+                adapter.notifyDataSetChanged();
+            }
+        }else{
+            userResponses.add(userinputstr);
+
+            if (userinputstr.contains("i want to report a vishing attack")) {
+                list_send.add(new chatData("", "", "What happened?", 1));
+                adapter.notifyDataSetChanged();
+            } else if (userinputstr.contains("i want to check if i got vished")) {
+                list_send.add(new chatData("", "", "Ok! Send me an audio file for me to analyze.", 1));
+                adapter.notifyDataSetChanged();
+            } else {
+                // Handle other user inputs and provide appropriate responses
+                // For example:
+//            list_send.add(new chatData("", "", "I'm sorry, I don't understand. Can you please rephrase your question?", 1));
+//            adapter.notifyDataSetChanged();
+
+                //get vishing prediction
+                vishingprediction(userinputstr);
+
+            }
+
+        }
+
+    }
+
+    public void vishingprediction(String userinputstr){
+        //get vishing prediction
+        Python py = Python.getInstance();
+        PyObject speech_to_text_module = py.getModule("Trie_Tree_vishing_detector");
+        Float stt_output = speech_to_text_module.callAttr("trieTree",""+userinputstr).toJava(Float.class);
+        Log.d("debug speech to text",""+stt_output);
+        list_send.add(new chatData("", "", "Spam Likelihood: "+String.format("%.2f", stt_output)+"%", 1));
+        adapter.notifyDataSetChanged();
+    }
+
 }
