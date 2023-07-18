@@ -1,9 +1,12 @@
 import os
 import importlib
+import threading
+import pandas as pd
 from telegram import Update, ReplyKeyboardMarkup, ReplyKeyboardRemove, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, ConversationHandler, CallbackQueryHandler
 import speech_recognition as sr
 from detection_modules.quiz_decision_tree import MyDecisionTreeClassifier
+import time
 
 # setup telegram bot
 updater = Updater(token='6319055640:AAFmM5rltpmE3J-x6fj7LPHxTWt_X0rsVjY', use_context=True)
@@ -13,6 +16,7 @@ dt_classifier = MyDecisionTreeClassifier()
 vishing_detector = importlib.import_module('detection_modules.trie_vishing_detection')
 
 QUIZ, END = range(2)
+CANCEL = threading.Event()
 
 def set_module(update: Update, context: CallbackContext) -> int:
     # Extract the method name from the module name string
@@ -57,8 +61,12 @@ def start(update: Update, context: CallbackContext) -> None:
         f'👋 Hello there! Ready to test messages or audios for vishing? Just send them over! \n\n'
         '🔍 Feeling like a detective? Start a vishing detection quiz with /quiz. \n\n'
         f'🔧 We are currently using the {current_module} detection module. '
-        'Want to try another module? Use /set_module to choose from the available modules.'
+        'Want to try another module? Use /set_module to choose from the available modules.\n\n'
+        '💡 Want to compare the performance of different detection modules? Use /compare to start the comparison. Comparisons can take a bit of time, so we have pre-prepared comparison results for you.\n\n'
+        '📊 Simply use /compare_results to instantly get the results of our latest module comparisons.'
     )
+
+
 
 
 
@@ -103,7 +111,7 @@ def format_reply(module_name, result_1, result_2, result_3):
         else:
             return f'Good news! 🎉\nThe message seems safe. Its similarity to a vishing attempt is *{result_2:.2f}* and to a non-vishing content is *{result_3:.2f}*. Always stay alert!'
 
-def detect_vishing(update: Update, context: CallbackContext) -> None:
+def handle_text(update: Update, context: CallbackContext) -> None:
     if context.user_data.get('state') == 'QUIZ':
         return
 
@@ -143,11 +151,127 @@ quiz_handler = ConversationHandler(
     },
 )
 
+def load_detection_modules(path='detection_modules'):
+    modules = {}
+    for filename in os.listdir(path):
+        if filename.endswith('.py') and filename != 'quiz_decision_tree.py':
+            spec = importlib.util.spec_from_file_location(filename[:-3], os.path.join(path, filename))
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            modules[filename[:-3]] = module
+    return modules
+
+def send_cancel_button(update: Update, context: CallbackContext) -> None:
+    cancel_keyboard = [['/cancel']]
+    cancel_markup = ReplyKeyboardMarkup(cancel_keyboard, one_time_keyboard=True)
+    update.message.reply_text('Press /cancel to stop the comparison at any time.', reply_markup=cancel_markup)
+
+def remove_cancel_button(update: Update, context: CallbackContext) -> None:
+    update.message.reply_text('Operation finished.', reply_markup=ReplyKeyboardRemove())
+
+
+def compare_algorithms(update: Update, context: CallbackContext) -> None:
+    send_cancel_button(update, context)
+    
+    update.message.reply_text('Loading detection modules...')
+    
+    # Load detection modules
+    modules = load_detection_modules()
+
+    update.message.reply_text('Finished loading modules. Now processing...')
+    
+    # Load input data
+    input_data = pd.read_csv('test_cases.csv')
+
+    processing_times = {module_name: [] for module_name in modules}
+    preprocessing_times = {module_name: [] for module_name in modules}
+    correct_predictions = {module_name: 0 for module_name in modules}
+    total_predictions = {module_name: 0 for module_name in modules}
+
+    for index, row in input_data.iterrows():
+        if CANCEL.is_set():
+            update.message.reply_text("Comparison cancelled.")
+            CANCEL.clear()
+            return
+        
+        transcript = row['Transcript']
+        actual_label = row['Label']
+
+        update.message.reply_text(
+            f'*Test Case Index: {index}*\n'
+            f'*Transcript: {transcript}*\n'
+            f'*Actual Label: {actual_label}*\n',
+            parse_mode='Markdown'
+        )
+        
+        for module_name, module in modules.items():
+            module_name_short = module_name.replace('_vishing_detection', '')
+            # Send processing status update	
+            status_message = context.bot.send_message(chat_id=update.effective_chat.id, text=f"Processing with module: {module_name_short}...")	
+            start = time.time()	
+            result = module.detect_vishing(transcript)	
+            end = time.time()	
+            # Delete status message	
+            context.bot.delete_message(chat_id=update.effective_chat.id, message_id=status_message.message_id)
+            predicted_label = result[0]
+
+            update.message.reply_text(
+                f'Module: {module_name_short}\n'
+                f'Predicted label: {predicted_label}\n'
+                f'Full Results: {result}\n'
+                f'Time taken: {end - start}s\n'
+            )
+            processing_times[module_name].append(end - start)
+            preprocessing_times[module_name].append(module.PREPROCESSING_TIME)
+
+            # Update correct predictions and total predictions
+            total_predictions[module_name] += 1
+            if predicted_label == actual_label:
+                correct_predictions[module_name] += 1
+                
+    update.message.reply_text(f'*Comparison completed! \nOverall Conclusion Below*',parse_mode='Markdown')
+
+    # Calculate and display accuracy, average processing time, and average preprocessing time for each module
+    for module_name in modules:
+        avg_processing_time = sum(processing_times[module_name])/len(processing_times[module_name])
+        avg_preprocessing_time = sum(preprocessing_times[module_name])/len(preprocessing_times[module_name])
+        accuracy = correct_predictions[module_name] / total_predictions[module_name]
+        update.message.reply_text(
+            f'Module: {module_name_short}\n'
+            f'Accuracy: {(accuracy*100):.1f}%\n'
+            f'Preprocessing time: {avg_preprocessing_time}s\n'
+            f'Average processing time: {avg_processing_time}s\n'
+        )
+
+    remove_cancel_button(update, context)
+
+def cancel(update: Update, context: CallbackContext) -> None:
+    CANCEL.set()
+    update.message.reply_text(f'*Cancellation requested. This will take effect after the current test case is finished.*', parse_mode='Markdown')
+    remove_cancel_button(update, context)
+
+def compare_results(update: Update, context: CallbackContext) -> None:
+    try:
+        with open('compare_results.txt', 'rb') as file:
+            context.bot.send_document(chat_id=update.effective_chat.id, document=file)
+    except FileNotFoundError:
+        update.message.reply_text('File not found. Please ensure the comparison has been executed and the results file exists.')
+    except Exception as e:
+        update.message.reply_text(f'Error sending file: {str(e)}')
+
+
+# Handler addition for /compare_results
+updater.dispatcher.add_handler(CommandHandler('compare_results', compare_results))
+
+
+# Handler additions
+updater.dispatcher.add_handler(CommandHandler('compare', lambda update, context: threading.Thread(target=compare_algorithms, args=(update, context)).start()))
+updater.dispatcher.add_handler(CommandHandler('cancel', cancel))
 
 updater.dispatcher.add_handler(CommandHandler('set_module', set_module))
 updater.dispatcher.add_handler(CommandHandler('start', start))
 updater.dispatcher.add_handler(quiz_handler)
-updater.dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, detect_vishing))
+updater.dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, handle_text))
 updater.dispatcher.add_handler(MessageHandler(Filters.voice, handle_audio))
 updater.dispatcher.add_handler(CallbackQueryHandler(module_selection))
 
