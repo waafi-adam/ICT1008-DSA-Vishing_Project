@@ -114,7 +114,7 @@ def detect_vishing(statement):
 
     return predicted_label, normalizedFraudSimilarity, normalizedNonFraudSimilarity
 
-nlp = spacy.load("en_core_web_lg")
+nlp = spacy.load("en_core_web_md")
 
 # Load the fraud dataset
 fraudDataSet = pd.read_csv("fraud_dataset.csv")
