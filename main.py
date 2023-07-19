@@ -7,9 +7,24 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Callb
 import speech_recognition as sr
 from detection_modules.quiz_decision_tree import MyDecisionTreeClassifier
 import time
+import logging
 
-# setup telegram bot
-updater = Updater(token='6319055640:AAFmM5rltpmE3J-x6fj7LPHxTWt_X0rsVjY', use_context=True)
+# variables
+TOKEN = os.environ.get("TELEGRAM_ID")
+NAME = 'inf1002-python-project'
+
+# heroku port
+PORT = os.environ.get('PORT', 443)
+
+# Enable logging
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Create the Updater and pass it your bot's TOKEN.
+# Make sure to set use_context=True to use the new context based callbacks
+updater = Updater(TOKEN, use_context=True)
+
 dt_classifier = MyDecisionTreeClassifier()
 
 # Default vishing detection module
@@ -275,5 +290,9 @@ updater.dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, h
 updater.dispatcher.add_handler(MessageHandler(Filters.voice, handle_audio))
 updater.dispatcher.add_handler(CallbackQueryHandler(module_selection))
 
-updater.start_polling()
+# Start the Bot
+updater.start_webhook(listen="0.0.0.0",port=os.environ.get("PORT",443),
+                        url_path=TOKEN,
+                        webhook_url="https://vishing-detector-bot-6102c3800103.herokuapp.com/"+TOKEN)
+
 updater.idle()
