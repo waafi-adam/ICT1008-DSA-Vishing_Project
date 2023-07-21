@@ -29,10 +29,10 @@ dt_classifier = MyDecisionTreeClassifier()
 
 # Pre-load all detection modules
 detection_modules = {
+    "nltk": importlib.import_module('detection_modules.nltk_vishing_detection'),
     "cosineSim": importlib.import_module('detection_modules.cosineSim_vishing_detection'),
     "gensim": importlib.import_module('detection_modules.gensim_vishing_detection'),
     "kmp": importlib.import_module('detection_modules.kmp_vishing_detection'),
-    "nltk": importlib.import_module('detection_modules.nltk_vishing_detection'),
     "sklearn": importlib.import_module('detection_modules.sklearn_vishing_detection'),
     "spacy": importlib.import_module('detection_modules.spacy_vishing_detection'),
     "trie": importlib.import_module('detection_modules.trie_vishing_detection'),
