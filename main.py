@@ -49,12 +49,12 @@ def set_module(update: Update, context: CallbackContext) -> int:
     current_module = vishing_detector.__name__.split('.')[1].replace('_vishing_detection', '')
     
     keyboard = [
-        [InlineKeyboardButton("CosineSim", callback_data='cosineSim'),
-        InlineKeyboardButton("Gensim", callback_data='gensim')],
-        [InlineKeyboardButton("KMP", callback_data='kmp'),
-        InlineKeyboardButton("NLTK", callback_data='nltk')],
-        [InlineKeyboardButton("Sklearn", callback_data='sklearn'),
-        InlineKeyboardButton("Spacy", callback_data='spacy')],
+        # [InlineKeyboardButton("CosineSim", callback_data='cosineSim'),
+        # InlineKeyboardButton("Gensim", callback_data='gensim')],
+        # [InlineKeyboardButton("KMP", callback_data='kmp'),
+        # InlineKeyboardButton("NLTK", callback_data='nltk')],
+        # [InlineKeyboardButton("Sklearn", callback_data='sklearn'),
+        # InlineKeyboardButton("Spacy", callback_data='spacy')],
         [InlineKeyboardButton("Trie", callback_data='trie')]
     ]
 
