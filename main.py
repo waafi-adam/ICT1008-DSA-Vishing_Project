@@ -27,8 +27,19 @@ updater = Updater(TOKEN, use_context=True)
 
 dt_classifier = MyDecisionTreeClassifier()
 
+# Pre-load all detection modules
+detection_modules = {
+    "nltk": importlib.import_module('detection_modules.nltk_vishing_detection'),
+    "cosineSim": importlib.import_module('detection_modules.cosineSim_vishing_detection'),
+    "gensim": importlib.import_module('detection_modules.gensim_vishing_detection'),
+    "kmp": importlib.import_module('detection_modules.kmp_vishing_detection'),
+    "sklearn": importlib.import_module('detection_modules.sklearn_vishing_detection'),
+    "spacy": importlib.import_module('detection_modules.spacy_vishing_detection'),
+    "trie": importlib.import_module('detection_modules.trie_vishing_detection'),
+}
+
 # Default vishing detection module
-vishing_detector = importlib.import_module('detection_modules.trie_vishing_detection')
+vishing_detector = detection_modules['trie']
 
 QUIZ, END = range(2)
 CANCEL = threading.Event()
@@ -62,8 +73,9 @@ def module_selection(update: Update, context: CallbackContext) -> None:
 
     update.effective_message.edit_text(f'Hang on... 🔄 Loading module: {module_name}...')
     global vishing_detector
-    vishing_detector = importlib.import_module(f'detection_modules.{module_name}_vishing_detection')
+    vishing_detector = detection_modules[module_name]
     update.effective_message.edit_text(f'All set! ✅ Detection module changed to: {module_name}')
+
 
 
 def start(update: Update, context: CallbackContext) -> None:
@@ -190,8 +202,8 @@ def compare_algorithms(update: Update, context: CallbackContext) -> None:
     
     update.message.reply_text('Loading detection modules...')
     
-    # Load detection modules
-    modules = load_detection_modules()
+    # No need to load modules here, use the pre-loaded ones
+    modules = detection_modules
 
     update.message.reply_text('Finished loading modules. Now processing...')
     
