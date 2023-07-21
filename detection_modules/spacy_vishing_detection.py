@@ -7,7 +7,7 @@ import csv
 preprocessing_start_time = time.time()
 
 # Load the spaCy English model
-nlp = spacy.load("en_core_web_md")
+nlp = spacy.load("en_core_web_sm")
 
 def preprocess_sentence(sentence):
     doc = nlp(sentence)
