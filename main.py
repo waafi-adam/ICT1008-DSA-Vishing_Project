@@ -29,12 +29,12 @@ dt_classifier = MyDecisionTreeClassifier()
 
 # Pre-load all detection modules
 detection_modules = {
-    "nltk": importlib.import_module('detection_modules.nltk_vishing_detection'),
-    "cosineSim": importlib.import_module('detection_modules.cosineSim_vishing_detection'),
-    "gensim": importlib.import_module('detection_modules.gensim_vishing_detection'),
-    "kmp": importlib.import_module('detection_modules.kmp_vishing_detection'),
-    "sklearn": importlib.import_module('detection_modules.sklearn_vishing_detection'),
-    "spacy": importlib.import_module('detection_modules.spacy_vishing_detection'),
+    # "nltk": importlib.import_module('detection_modules.nltk_vishing_detection'),
+    # "cosineSim": importlib.import_module('detection_modules.cosineSim_vishing_detection'),
+    # "gensim": importlib.import_module('detection_modules.gensim_vishing_detection'),
+    # "kmp": importlib.import_module('detection_modules.kmp_vishing_detection'),
+    # "sklearn": importlib.import_module('detection_modules.sklearn_vishing_detection'),
+    # "spacy": importlib.import_module('detection_modules.spacy_vishing_detection'),
     "trie": importlib.import_module('detection_modules.trie_vishing_detection'),
 }
 
@@ -49,12 +49,12 @@ def set_module(update: Update, context: CallbackContext) -> int:
     current_module = vishing_detector.__name__.split('.')[1].replace('_vishing_detection', '')
     
     keyboard = [
-        # [InlineKeyboardButton("CosineSim", callback_data='cosineSim'),
-        # InlineKeyboardButton("Gensim", callback_data='gensim')],
-        # [InlineKeyboardButton("KMP", callback_data='kmp'),
-        # InlineKeyboardButton("NLTK", callback_data='nltk')],
-        # [InlineKeyboardButton("Sklearn", callback_data='sklearn'),
-        # InlineKeyboardButton("Spacy", callback_data='spacy')],
+        [InlineKeyboardButton("CosineSim", callback_data='cosineSim'),
+        InlineKeyboardButton("Gensim", callback_data='gensim')],
+        [InlineKeyboardButton("KMP", callback_data='kmp'),
+        InlineKeyboardButton("NLTK", callback_data='nltk')],
+        [InlineKeyboardButton("Sklearn", callback_data='sklearn'),
+        InlineKeyboardButton("Spacy", callback_data='spacy')],
         [InlineKeyboardButton("Trie", callback_data='trie')]
     ]
 
