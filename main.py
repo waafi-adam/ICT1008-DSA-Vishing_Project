@@ -74,11 +74,11 @@ def start(update: Update, context: CallbackContext) -> None:
 
     update.message.reply_text(
         f'👋 Hello there! Ready to test messages or audios for vishing? Just send them over! \n\n'
-        '🔍 Feeling like a detective? Start a vishing detection quiz with /quiz. \n\n'
         f'🔧 We are currently using the {current_module} detection module. '
         'Want to try another module? Use /set_module to choose from the available modules.\n\n'
         '💡 Want to compare the performance of different detection modules? Use /compare to start the comparison. Comparisons can take a bit of time, so we have pre-prepared comparison results for you.\n\n'
-        '📊 Simply use /compare_results to instantly get the results of our latest module comparisons.'
+        '📊 Simply use /compare_results to instantly get the results of our latest module comparisons.\n\n'
+        '🔍 Feeling like a detective? Start a vishing detection quiz with /quiz. \n\n'
     )
 
 
@@ -117,7 +117,7 @@ def end(update: Update, context: CallbackContext) -> int:
 def format_reply(module_name, result_1, result_2, result_3):
     if module_name in ['detection_modules.kmp_vishing_detection', 'detection_modules.trie_vishing_detection']:
         if result_1 == "Vishing":
-            return f'*Vishing Detected!* 🚨\nThe message has a *{result_2:.2f}* likelihood of being a vishing attempt.\n\n*Type of Vishing:* {result_3}'
+            return f'*Vishing Detected!* 🚨\nThe message has a *{result_2:.2f}%* likelihood of being a vishing attempt.\n\n*Type of Vishing:* {result_3}'
         else:
             return f'Good news! 🎉\nThe message seems safe with a low vishing likelihood of *{result_2:.2f}*. Always stay alert!'
     else:
