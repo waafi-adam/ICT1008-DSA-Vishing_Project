@@ -26,7 +26,7 @@ def detect_vishing(input_text, modules):
 
 if __name__ == "__main__":
     # Load input data
-    input_data = pd.read_csv('test_cases.csv')
+    input_data = pd.read_csv('resources/test_cases.csv')
 
     # Load detection modules
     modules = load_detection_modules()

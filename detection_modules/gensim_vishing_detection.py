@@ -11,10 +11,10 @@ import csv
 preprocessing_start_time = time.time()
 
 # Load the fraud dataset from CSV
-fraud_dataset = pd.read_csv('fraud_dataset.csv')
+fraud_dataset = pd.read_csv('resources/fraud_dataset.csv')
 
 # Load the non-fraud dataset from CSV
-nonfraud_dataset = pd.read_csv('non_fraud_dataset.csv')
+nonfraud_dataset = pd.read_csv('resources/non_fraud_dataset.csv')
 
 def preprocess_sentence(sentence):
     # Define the stopwords
@@ -67,7 +67,7 @@ PREPROCESSING_TIME  = preprocessing_end_time - preprocessing_start_time
 
 if __name__ == "__main__":
     test_cases = []
-    with open('test_cases.csv', 'r') as file:
+    with open('resources/test_cases.csv', 'r') as file:
         reader = csv.reader(file)
         for row in reader:
             test_cases.append(row)

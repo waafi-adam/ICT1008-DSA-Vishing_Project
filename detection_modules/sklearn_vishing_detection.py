@@ -45,8 +45,8 @@ def detect_vishing(statement):
 
     preprocessed_statement = preprocessor.transform([statement])
 
-    fraud_dataset = pd.read_csv('fraud_dataset.csv')
-    non_fraud_dataset = pd.read_csv('non_fraud_dataset.csv')
+    fraud_dataset = pd.read_csv('resources/fraud_dataset.csv')
+    non_fraud_dataset = pd.read_csv('resources/non_fraud_dataset.csv')
 
     preprocessed_fraud_dataset = preprocessor.transform(fraud_dataset['Transcript'].tolist())
     preprocessed_non_fraud_dataset = preprocessor.transform(non_fraud_dataset['Non_Frauds'].tolist())
@@ -72,7 +72,7 @@ PREPROCESSING_TIME = preprocessing_end_time - preprocessing_start_time
 
 if __name__ == "__main__":
     test_cases = []
-    with open('test_cases.csv', 'r') as file:
+    with open('resources/test_cases.csv', 'r') as file:
         reader = csv.reader(file)
         for row in reader:
             test_cases.append(row)
