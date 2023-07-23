@@ -53,8 +53,8 @@ def prepare_failure_function(word):
     return failure
 
 # Load the datasets
-fraud_df = pd.read_csv('fraud_dataset.csv')
-nonfraud_df = pd.read_csv('non_fraud_dataset.csv')
+fraud_df = pd.read_csv('resources/fraud_dataset.csv')
+nonfraud_df = pd.read_csv('resources/non_fraud_dataset.csv')
 
 # Preprocess and tokenize text
 fraud_df['Transcript'], fraud_df['Word_Count'] = zip(*fraud_df['Transcript'].apply(tokenize_text))
@@ -187,7 +187,7 @@ if __name__ == "__main__":
     # This will only be executed when you run this script directly
     # and not when you import from another script.
     test_cases = []
-    with open('test_cases.csv', 'r') as file:
+    with open('resources/test_cases.csv', 'r') as file:
         reader = csv.reader(file)
         for row in reader:
             test_cases.append(row)

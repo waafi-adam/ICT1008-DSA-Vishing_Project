@@ -42,12 +42,12 @@ def detect_vishing(statement):
     return "Vishing" if avg_similarity_fraud > avg_similarity_nonfraud else "Non-Vishing", avg_similarity_fraud, avg_similarity_nonfraud
 
 # Load the fraud dataset from CSV
-fraud_dataset = pd.read_csv('fraud_dataset.csv')
+fraud_dataset = pd.read_csv('resources/fraud_dataset.csv')
 # Extract the text column from the fraud dataset and preprocess
 fraud_sentences = [preprocess_sentence(x) for x in fraud_dataset['Transcript'].tolist()]
 
 # Load the non-fraud dataset from CSV
-nonfraud_dataset = pd.read_csv('non_fraud_dataset.csv')
+nonfraud_dataset = pd.read_csv('resources/non_fraud_dataset.csv')
 # Extract the text column from the non-fraud dataset and preprocess
 nonfraud_sentences = [preprocess_sentence(x) for x in nonfraud_dataset['Non_Frauds'].tolist()]
 
@@ -57,7 +57,7 @@ PREPROCESSING_TIME  = preprocessing_end_time - preprocessing_start_time
 
 if __name__ == "__main__":
     test_cases = []
-    with open('test_cases.csv', 'r') as file:
+    with open('resources/test_cases.csv', 'r') as file:
         reader = csv.reader(file)
         for row in reader:
             test_cases.append(row)

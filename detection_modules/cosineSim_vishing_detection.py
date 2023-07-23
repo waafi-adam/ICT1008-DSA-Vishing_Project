@@ -117,18 +117,18 @@ def detect_vishing(statement):
 nlp = spacy.load("en_core_web_sm")
 
 # Load the fraud dataset
-fraudDataSet = pd.read_csv("fraud_dataset.csv")
+fraudDataSet = pd.read_csv("resources/fraud_dataset.csv")
 # Preprocess the "Transcript" column using the preprocess_sentence function
 fraudDataSet["Transcript"] = fraudDataSet["Transcript"].apply(preprocess_sentence)
 # Save the preprocessed dataset to a new CSV file
-fraudDataSet.to_csv("preprocessed_fraud_dataset.csv", index=False)
+fraudDataSet.to_csv("resources/preprocessed_fraud_dataset.csv", index=False)
 
 # Load the non-fraud dataset
-nonFraudDataSet = pd.read_csv("non_fraud_dataset.csv")
+nonFraudDataSet = pd.read_csv("resources/non_fraud_dataset.csv")
 # Preprocess the "Non_Frauds" column using the preprocess_sentence function
 nonFraudDataSet["Non_Frauds"] = nonFraudDataSet["Non_Frauds"].apply(preprocess_sentence)
 # Save the preprocessed dataset to a new CSV file
-nonFraudDataSet.to_csv("preprocessed_non_fraud_dataset.csv", index=False)
+nonFraudDataSet.to_csv("resources/preprocessed_non_fraud_dataset.csv", index=False)
 
 # preprocessing time end
 preprocessing_end_time = time.time()
@@ -138,7 +138,7 @@ if __name__ == "__main__":
     # This will only be executed when you run this script directly
     # and not when you import from another script.
     test_cases = []
-    with open('test_cases.csv', 'r') as file:
+    with open('resources/test_cases.csv', 'r') as file:
         reader = csv.reader(file)
         for row in reader:
             test_cases.append(row)

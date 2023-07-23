@@ -46,13 +46,13 @@ def tokenize_text(text):
     text = re.sub(r'(mr|mrs|ms|miss|dr|prof|officer)\.\s+\w+', '', text)
     text = text.translate(str.maketrans('', '', string.punctuation))
     tokens = text.split()
-    with open('stopwords_greetings_pronouns.txt', 'r') as f:
+    with open('resources/stopwords_greetings_pronouns.txt', 'r') as f:
         stop_words = f.read().splitlines()
     words = [w for w in tokens if not w in stop_words]
     return words, len(tokens)
 
-fraud_df = pd.read_csv('fraud_dataset.csv')
-nonfraud_df = pd.read_csv('non_fraud_dataset.csv')
+fraud_df = pd.read_csv('resources/fraud_dataset.csv')
+nonfraud_df = pd.read_csv('resources/non_fraud_dataset.csv')
 
 fraud_df['Transcript'], fraud_df['Word_Count'] = zip(*fraud_df['Transcript'].apply(tokenize_text))
 nonfraud_df['Non_Frauds'], nonfraud_df['Word_Count'] = zip(*nonfraud_df['Non_Frauds'].apply(tokenize_text))
@@ -110,7 +110,7 @@ PREPROCESSING_TIME = preprocessing_end_time - preprocessing_start_time
 
 if __name__ == "__main__":
     test_cases = []
-    with open('test_cases.csv', 'r') as file:
+    with open('resources/test_cases.csv', 'r') as file:
         reader = csv.reader(file)
         for row in reader:
             test_cases.append(row)

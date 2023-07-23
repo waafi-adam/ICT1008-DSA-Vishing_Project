@@ -59,8 +59,8 @@ def detect_vishing(reference_sentence):
     
     return 'Vishing' if fraud_similarity > nonfraud_similarity else 'Not Vishing', fraud_similarity, nonfraud_similarity
 
-fraud_dataset = load_dataset('fraud_dataset.csv')
-nonfraud_dataset = load_dataset('non_fraud_dataset.csv')
+fraud_dataset = load_dataset('resources/fraud_dataset.csv')
+nonfraud_dataset = load_dataset('resources/non_fraud_dataset.csv')
 
 preprocessing_end_time = time.time()
 PREPROCESSING_TIME  = preprocessing_end_time - preprocessing_start_time
@@ -70,7 +70,7 @@ if __name__ == '__main__':
     # This will only be executed when you run this script directly
     # and not when you import from another script.
     test_cases = []
-    with open('test_cases.csv', 'r') as file:
+    with open('resources/test_cases.csv', 'r') as file:
         reader = csv.reader(file)
         for row in reader:
             test_cases.append(row)

@@ -208,7 +208,7 @@ def compare_algorithms(update: Update, context: CallbackContext) -> None:
     update.message.reply_text('Finished loading modules. Now processing...')
     
     # Load input data
-    input_data = pd.read_csv('test_cases.csv')
+    input_data = pd.read_csv('resources/test_cases.csv')
 
     processing_times = {module_name: [] for module_name in modules}
     preprocessing_times = {module_name: [] for module_name in modules}
