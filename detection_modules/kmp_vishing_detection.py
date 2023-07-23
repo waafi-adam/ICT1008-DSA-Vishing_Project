@@ -27,7 +27,7 @@ def tokenize_text(text):
     word_count = len(tokens)
 
     # Filter out stopwords, greetings, pronouns
-    with open('stopwords_greetings_pronouns.txt', 'r') as f:
+    with open('resources/stopwords_greetings_pronouns.txt', 'r') as f:
         stop_words = f.read().splitlines()
     words = [w for w in tokens if not w in stop_words]
 

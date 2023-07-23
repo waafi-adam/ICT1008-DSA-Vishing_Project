@@ -279,7 +279,7 @@ def cancel(update: Update, context: CallbackContext) -> None:
 
 def compare_results(update: Update, context: CallbackContext) -> None:
     try:
-        with open('compare_results.txt', 'rb') as file:
+        with open('resources/compare_results.txt', 'rb') as file:
             context.bot.send_document(chat_id=update.effective_chat.id, document=file)
     except FileNotFoundError:
         update.message.reply_text('File not found. Please ensure the comparison has been executed and the results file exists.')
